@@ -1,11 +1,11 @@
-const { getFiles } = require("../util/functions");
+const { getFiles } = require("../util/functions")
 
 module.exports = (bot, reload) => {
     const {client} = bot
 
     let events = getFiles("./events/", ".js")
     if(events.length === 0) {
-        console.log("No events to load");
+        console.log("No events to load")
     }
 
     events.forEach((f, i) => {
@@ -17,12 +17,12 @@ module.exports = (bot, reload) => {
         client.events.set(event.name, event)
 
         if(!reload) {
-            console.log(`${i + 1}.${f} loaded`);
+            console.log(`${i + 1}.${f} loaded`)
         }
     })
 
     if(!reload) {
-        initEvents(bot);
+        initEvents(bot)
     }
 }
 
@@ -31,12 +31,12 @@ function triggerEventHandler(bot, event, ...args) {
 
     try {
         if(client.events.has(event)) {
-            client.events.get(event).run(bot, ...args);
+            client.events.get(event).run(bot, ...args)
         } else {
-            throw new Error(`Event ${event} does not exist`);
+            throw new Error(`Event ${event} does not exist`)
         }
     } catch(err) {
-        console.error(err);
+        console.error(err)
     }
 }
 
