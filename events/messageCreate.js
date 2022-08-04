@@ -1,7 +1,7 @@
 const Discord = require("discord.js")
 
 module.exports = {
-    name:"messageCreate",
+    name: "messageCreate",
     run: async function runAll(bot, message) {
         const {client, prefix, owners} = bot
 
