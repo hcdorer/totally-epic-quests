@@ -1,3 +1,11 @@
+/*
+NOTE TO (potential) FUTURE COLLABORATORS:
+You must create a file called logs/log.txt (or whatever filename is currently passed into the logger constructor in index.js) at the
+root directory of this project!
+fs.appendFile() does NOT create a new file if the given file does not exist, even though every source I've found says it should!
+If someone can figure out how to circumvent this, or what I'm doing wrong, that would be greatly appreciated!
+*/
+
 const fs = require(`fs`)
 const path = require(`path`)
 
