@@ -5,7 +5,10 @@ const { REST } = require('@discordjs/rest')
 const { clientId, token } = require('./config.json')
 
 const guildId = process.argv.slice(2)[0]
-console.log(guildId)
+if(!guildId) {
+    console.log("No guild ID provided!")
+    process.exit(1)
+}
 
 const commands = []
 const commandsPath = path.join(__dirname, `commands`)
