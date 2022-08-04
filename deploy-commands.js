@@ -2,7 +2,10 @@ const fs = require(`fs`)
 const path = require(`path`)
 const { Routes } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const { clientId, guildId, token } = require('./config.json');
+const { clientId, token } = require('./config.json');
+
+const guildId = process.argv.slice(2)[0]
+console.log(guildId)
 
 const commands = []
 const commandsPath = path.join(__dirname, `commands`)
