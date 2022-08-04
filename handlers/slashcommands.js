@@ -1,8 +1,5 @@
 const fs = require("fs")
-
-const getFiles = (path, ending) => {
-    return fs.readdirSync(path).filter(f => f.endsWith(ending))
-}
+const {getFiles} = require("../util/functions")
 
 module.exports = (bot, reload) => {
     const { client } = bot
