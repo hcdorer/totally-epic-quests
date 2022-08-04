@@ -3,8 +3,10 @@ const { token } = require(`./config.json`)
 const fs = require(`fs`)
 const path = require(`path`)
 const { dirname } = require("path")
+const Logger = require(`./utils/logger.js`)
 
 const client = new Client({intents: [GatewayIntentBits.Guilds]})
+const logger = new Logger(path.join(__dirname, `logs`, `log.txt`))
 
 const eventsPath = path.join(__dirname, `events`)
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(`.js`))
@@ -14,9 +16,9 @@ for(const file of eventFiles) {
     const event = require(filePath)
 
     if(event.once) {
-        client.once(event.name, (...args) => event.execute(...args))
+        client.once(event.name, (...args) => event.execute(logger, ...args))
     } else {
-        client.on(event.name, (...args) => event.execute(...args))
+        client.on(event.name, (...args) => event.execute(logger, ...args))
     }
 }
 
@@ -31,4 +33,8 @@ for(const file of commandFiles) {
     client.commands.set(command.data.name, command)
 }
 
+logger.log(`Logger initialized`)
+
 client.login(token)
+
+module.exports = logger

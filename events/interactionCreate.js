@@ -1,6 +1,6 @@
 module.exports = {
     name: "interactionCreate",
-    async execute(interaction) {
+    async execute(logger, interaction) {
         if(!interaction.isChatInputCommand()) {
             return;
         }

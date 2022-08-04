@@ -1,9 +1,9 @@
-const { execute } = require("../commands/ping");
+const { execute } = require(`../commands/ping.js`);
 
 module.exports = {
     name: "ready",
     once: true,
-    execute(client) {
-        console.log(`Logged in as ${client.user.tag}`)
+    execute(logger, client) {
+        logger.log(`Logged in as ${client.user.tag}`)
     }
 }
