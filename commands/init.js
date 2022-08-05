@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require(`discord.js`)
+const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
 const fs = require(`fs`)
 const path = require(`path`)
 const { savePlayers, saveQuests } = require(`../game/gameData.js`)
@@ -6,7 +6,8 @@ const { savePlayers, saveQuests } = require(`../game/gameData.js`)
 module.exports = {
     data: new SlashCommandBuilder()
         .setName(`init`)
-        .setDescription(`Initialize the bot in this server`),
+        .setDescription(`Initialize the bot in this server`)
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /init`)
         
