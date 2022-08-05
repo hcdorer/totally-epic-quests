@@ -9,8 +9,8 @@ module.exports = {
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /init`)
 
-        var questsFilename = interaction.guildId + "_quests.json"
-        var playersFilename = interaction.guildId + "_players.json"
+        var questsFilename = `${interaction.guildId}_quests.json`
+        var playersFilename = `${interaction.guildId}_players.json`
 
         fs.writeFile(path.join(__dirname, `..`, `saves`, questsFilename), JSON.stringify({}), (err) => {
             if(err) {

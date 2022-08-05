@@ -7,7 +7,7 @@ const Logger = require(`./utils/logger.js`)
 
 const client = new Client({intents: [GatewayIntentBits.Guilds]})
 
-var logFilename = Logger.now().replaceAll(':', '_') + '.txt'
+var logFilename = `${Logger.now().replaceAll(':', '_')}.txt`
 console.log(logFilename)
 const logger = new Logger(path.join(__dirname, `logs`, logFilename))
 
