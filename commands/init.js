@@ -1,6 +1,7 @@
 const { SlashCommandBuilder } = require(`discord.js`)
 const fs = require(`fs`)
 const path = require(`path`)
+const { savePlayers, saveQuests } = require(`../game/gameData.js`)
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -8,23 +9,13 @@ module.exports = {
         .setDescription(`Initialize the bot in this server`),
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /init`)
-
-        var questsFilename = `${interaction.guildId}_quests.json`
-        var playersFilename = `${interaction.guildId}_players.json`
-
-        fs.writeFile(path.join(__dirname, `..`, `saves`, questsFilename), JSON.stringify({}), (err) => {
-            if(err) {
-                interaction.reply(`There was a problem creating the data files!`)
-                throw err
-            }
-        })
-
-        fs.writeFile(path.join(__dirname, `..`, `saves`, playersFilename), JSON.stringify({}), (err) => {
-            if(err) {
-                interaction.reply(`There was a problem creating the data files!`)
-                throw err
-            }
-        })
+        
+        try {
+            savePlayers(logger, interaction.guildId, {})
+            saveQuests(logger, interaction.guildId, {})
+        } catch(err) {
+            return interaction.reply(`There was an error creating the files!`)
+        }
 
         interaction.reply(`Game initialization successful!`)
     }

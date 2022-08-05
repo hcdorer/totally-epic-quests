@@ -2,7 +2,8 @@ const path = require(`path`)
 
 class Player {    
     /**  
-     * @param {string} id
+     * @param {string} playerId
+     * @param {string} guildId
      * @returns {Player}
     */
     static find(playerId, guildId) {
@@ -16,3 +17,5 @@ class Player {
     expToNextLevel = 100
     currentQuest
 }
+
+module.exports = Player
