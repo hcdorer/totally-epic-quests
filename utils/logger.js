@@ -30,12 +30,6 @@ class Logger {
     constructor(filePath) {
         this.#filePath = filePath
         console.log(this.#filePath)
-
-        fs.appendFile(this.#filePath, `\n================================================\n`, (err) => {
-            if(err) {
-                throw err;
-            }
-        })
     }
 
     /**

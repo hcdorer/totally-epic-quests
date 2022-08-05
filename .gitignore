@@ -1,4 +1,9 @@
-config.json
-package-lock.json
+#Folders
 node_modules/
 logs/
+saves/
+
+#Files
+config.json
+package-lock.json
+test.js

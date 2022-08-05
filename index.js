@@ -6,7 +6,10 @@ const { dirname } = require("path")
 const Logger = require(`./utils/logger.js`)
 
 const client = new Client({intents: [GatewayIntentBits.Guilds]})
-const logger = new Logger(path.join(__dirname, `logs`, `log.txt`))
+
+var logFilename = Logger.now().replaceAll(':', '_') + '.txt'
+console.log(logFilename)
+const logger = new Logger(path.join(__dirname, `logs`, logFilename))
 
 const eventsPath = path.join(__dirname, `events`)
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith(`.js`))
