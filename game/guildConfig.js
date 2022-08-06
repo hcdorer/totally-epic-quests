@@ -1,5 +1,5 @@
 class GuildConfig {
-    /** @type {string} */
+    /** @type {RankRole[]} */
     rankRoles = []
 }
 

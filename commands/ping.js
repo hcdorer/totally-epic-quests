@@ -6,6 +6,7 @@ module.exports = {
         .setDescription(`Replies with "pong"`),
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /ping`)
+        
         await interaction.reply({content: `Pong!`, ephemeral: true})
     }
 }

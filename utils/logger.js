@@ -22,14 +22,13 @@ class Logger {
     }
 
     /** @type {string} */
-    #filePath
+    filePath
 
     /**
      * @param {string} filename
      */
     constructor(filePath) {
-        this.#filePath = filePath
-        console.log(this.#filePath)
+        this.filePath = filePath
     }
 
     /**
@@ -38,7 +37,7 @@ class Logger {
     log(message) {
         const output = `${Logger.now()}: ${message}`
         console.log(output)
-        fs.appendFile(this.#filePath, `${output}\n`, (err) => {
+        fs.appendFile(this.filePath, `${output}\n`, (err) => {
             if(err) {
                 throw err
             }

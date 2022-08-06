@@ -8,7 +8,6 @@ const Logger = require(`./utils/logger.js`)
 const client = new Client({intents: [GatewayIntentBits.Guilds]})
 
 var logFilename = `${Logger.now().replaceAll(':', '_')}.txt`
-console.log(logFilename)
 const logger = new Logger(path.join(__dirname, `logs`, logFilename))
 
 const eventsPath = path.join(__dirname, `events`)
@@ -36,7 +35,7 @@ for(const file of commandFiles) {
     client.commands.set(command.data.name, command)
 }
 
-logger.log(`Logger initialized`)
+logger.log(`Logger initialized; logging to file ${logger.filePath}`)
 
 client.login(token)
 
