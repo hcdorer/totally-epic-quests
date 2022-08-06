@@ -1,12 +1,13 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
 const fs = require(`fs`)
 const path = require(`path`)
-const { savePlayers, saveQuests } = require(`../game/gameData.js`)
+const { savePlayers, saveQuests, saveConfig } = require(`../game/gameData.js`)
+const GuildConfig = require(`../game/guildConfig.js`)
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName(`init`)
-        .setDescription(`Initialize the bot in this server`)
+        .setDescription(`Initialize the bot in this server.  Requires Manage Server permission.`)
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /init`)
@@ -14,10 +15,12 @@ module.exports = {
         try {
             savePlayers(logger, interaction.guildId, {})
             saveQuests(logger, interaction.guildId, {})
+            saveConfig(logger, interaction.guildId, new GuildConfig())
         } catch(err) {
-            return interaction.reply(`There was an error creating the files!`)
+            console.error(err)
+            return interaction.reply(`Failed to initialize Totally Epic Quests!`)
         }
 
-        interaction.reply(`Game initialization successful!`)
+        interaction.reply(`Totally Epic Quests has been initialized in this server!`)
     }
 }

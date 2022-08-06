@@ -1,5 +1,16 @@
+const { strict } = require("assert")
+const { captureRejectionSymbol } = require("events")
 const fs = require(`fs`)
 const path = require(`path`)
+const GuildConfig = require("./guildConfig")
+
+function saveData(data, filename) {
+    fs.writeFile(path.join(__dirname, `..`, `saves`, filename), JSON.stringify(data), (err) => {
+        if(err) {
+            throw err
+        }
+    })
+}
 
 /**
  * @param {Logger} logger
@@ -9,14 +20,14 @@ const path = require(`path`)
 function savePlayers(logger, guildId, players) {
     var filename = `${guildId}_players.json`
     
-    fs.writeFile(path.join(__dirname, `..`, `saves`, filename), JSON.stringify(players), (err) => {
-        if(err) {
-            // logger.log(`Error saving ${filename}`)
-            throw err
-        }
+    try {
+        saveData(players, filename)
+    } catch(err) {
+        logger.log(`Error saving ${filename}`)
+        throw err
+    }
 
-        logger.log(`Saved ${filename}`)
-    })
+    logger.log(`Saved ${filename}`)
 }
 
 /**
@@ -27,14 +38,32 @@ function savePlayers(logger, guildId, players) {
 function saveQuests(logger, guildId, quests) {
     var filename = `${guildId}_quests.json`
     
-    fs.writeFile(path.join(__dirname, `..`, `saves`, filename), JSON.stringify(quests), (err) => {
-        if(err) {
-            // logger.log(`Error saving ${filename}`)
-            throw err
-        }
+    try {
+        saveData(quests, filename)
+    } catch(err) {
+        logger.log(`Error saving ${filename}`)
+        throw err
+    }
 
-        logger.log(`Saved ${filename}`)
-    })
+    logger.log(`Saved ${filename}`)
+}
+
+/**
+ * @param {Logger} logger
+ * @param {string} guildId
+ * @param {object} config
+ */
+function saveConfig(logger, guildId, config) {
+    var filename = `${guildId}_config.json`
+
+    try {
+        saveData(config, filename)
+    } catch(err) {
+        logger.log(`Error saving ${filename}`)
+        throw err
+    }
+
+    logger.log(`Saved ${filename}`)
 }
 
 /**
@@ -63,7 +92,7 @@ function loadPlayers(logger, guildId) {
  * @returns {object | undefined}
  */
 function loadQuests(logger, guildId) {
-    var filename = `${guildId}_players.json`
+    var filename = `${guildId}_quests.json`
     var quests
 
     try {
@@ -77,9 +106,31 @@ function loadQuests(logger, guildId) {
     return quests
 }
 
+/**
+ * @param {Logger} logger
+ * @param {string} guildId 
+ * @returns {GuildConfig | undefined}
+ */
+function loadConfig(logger, guildId) {
+    var filename = `${guildId}_config.json`
+    var config
+
+    try {
+        config = require(path.join(__dirname, `..`, `saves`, filename))
+    } catch(err) {
+        logger.log(`Error loading ${filename}`)
+        return
+    }
+
+    logger.log(`Loaded ${filename}`)
+    return config
+}
+
 module.exports = {
     savePlayers,
     saveQuests,
+    saveConfig,
     loadPlayers,
-    loadQuests
+    loadQuests,
+    loadConfig
 }
