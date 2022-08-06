@@ -7,3 +7,4 @@ saves/
 config.json
 package-lock.json
 test.js
+.eslintrc.json
