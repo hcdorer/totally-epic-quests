@@ -10,12 +10,12 @@ module.exports = {
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} has used /begin`)
 
-        var players = loadPlayers(logger, interaction.guildId)
+        let players = loadPlayers(logger, interaction.guildId)
 
         if(players[interaction.user.id]) {
             return interaction.reply(`${interaction.member.displayName}, you have already begun Totally Epic Quests!`)
         }
-        
+
         players[interaction.user.id] = new Player()
         savePlayers(logger, interaction.guildId, players)
         interaction.reply(`${interaction.member.displayName}, your Totally Epic Quests have begun!`)

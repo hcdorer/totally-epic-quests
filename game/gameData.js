@@ -18,7 +18,7 @@ function saveData(data, filename) {
  * @param {object} players
  */
 function savePlayers(logger, guildId, players) {
-    var filename = `${guildId}_players.json`
+    let filename = `${guildId}_players.json`
     
     try {
         saveData(players, filename)
@@ -36,7 +36,7 @@ function savePlayers(logger, guildId, players) {
  * @param {object} quests
  */
 function saveQuests(logger, guildId, quests) {
-    var filename = `${guildId}_quests.json`
+    let filename = `${guildId}_quests.json`
     
     try {
         saveData(quests, filename)
@@ -54,7 +54,7 @@ function saveQuests(logger, guildId, quests) {
  * @param {object} config
  */
 function saveConfig(logger, guildId, config) {
-    var filename = `${guildId}_config.json`
+    let filename = `${guildId}_config.json`
 
     try {
         saveData(config, filename)
@@ -72,8 +72,8 @@ function saveConfig(logger, guildId, config) {
  * @returns {object | undefined}
  */
 function loadPlayers(logger, guildId) {
-    var filename = `${guildId}_players.json`
-    var players
+    let filename = `${guildId}_players.json`
+    let players
 
     try {
         players = require(path.join(__dirname, `..`, `saves`, filename))
@@ -92,8 +92,8 @@ function loadPlayers(logger, guildId) {
  * @returns {object | undefined}
  */
 function loadQuests(logger, guildId) {
-    var filename = `${guildId}_quests.json`
-    var quests
+    let filename = `${guildId}_quests.json`
+    let quests
 
     try {
         quests = require(path.join(__dirname, `..`, `saves`, filename))
@@ -112,8 +112,8 @@ function loadQuests(logger, guildId) {
  * @returns {GuildConfig | undefined}
  */
 function loadConfig(logger, guildId) {
-    var filename = `${guildId}_config.json`
-    var config
+    let filename = `${guildId}_config.json`
+    let config
 
     try {
         config = require(path.join(__dirname, `..`, `saves`, filename))
