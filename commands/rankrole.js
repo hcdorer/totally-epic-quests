@@ -73,14 +73,27 @@ module.exports = {
             if(config.rankRoles.length <= 0) {
                 return interaction.reply({content: `You have not set up any rank roles for this server!`, ephemeral: true})
             }
+            
+            let buildOutput = () => {
+                return new Promise((resolve, reject) => {
+                    let output = `The rank roles for this server are:\n`
 
-            let output = `The rank roles for this server are:\n`
+                    let rolesProcessed = 0
+                    config.rankRoles.forEach(rankRole => {
+                        interaction.guild.roles.fetch(rankRole.id)
+                            .then(role => {
+                                output += `\n${role.name}, attained at level ${rankRole.attainedAtLevel}`
+                                rolesProcessed++
 
-            config.rankRoles.forEach(rankRole => {
-                output += `\n${rankRole.name}, attained at level ${rankRole.attainedAtLevel}`
-            })
+                                if(rolesProcessed === config.rankRoles.length) {
+                                    resolve(output)
+                                }
+                            })
+                        })
+                })
+            }
 
-            interaction.reply({content: output, ephemeral: true})
+            buildOutput().then(output => interaction.reply({content: output, ephemeral: true}))
         }
     }
 }
