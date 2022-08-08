@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
-const { loadQuests, saveQuests } = require(`../game/gameData.js`)
+const { loadQuests, saveQuests, loadPlayers, savePlayers } = require(`../game/gameData.js`)
 const Quest = require(`../game/quest.js`)
 
 module.exports = {
@@ -52,6 +52,13 @@ module.exports = {
             .addStringOption(option => option
                 .setName(`name`)
                 .setDescription(`The name of the quest to view`)
+                .setRequired(true)))
+        .addSubcommand(subcommand => subcommand
+            .setName(`accept`)
+            .setDescription(`Accept a quest!`)
+            .addStringOption(option => option
+                .setName(`name`)
+                .setDescription(`The name of the quest you wish to accept`)
                 .setRequired(true))),
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /quest`)
@@ -165,7 +172,7 @@ module.exports = {
                 logger.log(`No quest named ${name} exists`)
                 logger.newline()
 
-                return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true})
+                return interaction.reply(`There's no quest named ${name}!`)
             }
 
             logger.log(`Viewing quest "${name}"`)
@@ -177,6 +184,48 @@ module.exports = {
             logger.newline()
 
             interaction.reply(output)
+        }
+        if(interaction.options.getSubcommand() === `accept`) {
+            logger.log(`Subcommand: accept`)
+
+            let name = interaction.options.getString(`name`)
+            let players = loadPlayers(logger, interaction.guildId)
+
+            if(!quests[name]) {
+                logger.log(`No quest named ${name} exists`)
+                logger.newline()
+
+                return interaction.reply(`There's no quest named ${name}!`)
+            }
+
+            if(!players[interaction.user.id]) {
+                logger.log(`${interaction.user.tag} does not have a profile`)
+                logger.newline()
+
+                return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
+            }
+
+            if(quests[name].completedBy.includes(interaction.user.id)) {
+                logger.log(`${interaction.user.tag} has already completed quest "${name}"`)
+                logger.newline()
+
+                return interaction.reply(`You have already completed ${name}!`)
+            }
+
+            if(players[interaction.user.id].currentQuest === name) {
+                logger.log(`${interaction.user.tag} has already accepted quest "${name}"`)
+                logger.newline()
+
+                return interaction.reply(`You have already accepted ${name}!`)
+            }
+
+            players[interaction.user.id].currentQuest = name
+            savePlayers(logger, interaction.guildId, players)
+            
+            logger.log(`${interaction.user.tag} has accepted quest "${name}"`)
+            logger.newline()
+
+            interaction.reply(`Quest accepted!`)
         }
     }
 }

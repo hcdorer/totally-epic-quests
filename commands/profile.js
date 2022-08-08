@@ -50,7 +50,7 @@ module.exports = {
                     logger.log(`Could not find the requested profile`)
 
                     if(isSelf) {
-                        return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
+                        return interaction.reply(`You do not have a Totally Epic Quests profile, ${member.displayName}!`)
                     } else {
                         return interaction.reply(`${member.displayName} does not have a Totally Epic Quests profile!`)
                     }
