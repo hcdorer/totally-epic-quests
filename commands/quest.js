@@ -27,7 +27,10 @@ module.exports = {
             .addStringOption(option => option
                 .setName(`name`)
                 .setDescription(`The name of the quest to delete`)
-                .setRequired(true))),
+                .setRequired(true)))
+        .addSubcommand(subcommand => subcommand
+            .setName(`list`)
+            .setDescription(`View a list of all available quests`)),
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /quest`)
 
@@ -82,11 +85,25 @@ module.exports = {
             }
 
             delete quests[name]
+            saveQuests(logger, interaction.guildId, quests)
 
             logger.log(`Deleted the ${name} quest`)
             logger.newline()
 
             interaction.reply({content: `Quest deleted!`, ephemeral: true})
+        }
+        if(interaction.options.getSubcommand() === `list`) {
+            logger.log(`Subcommand: list`)
+
+            let output = `The Totally Epic Quests in this server are:\n`
+
+            for(const name in quests) {
+                output += `\n${name}` // TODO: include check mark emoji if the quest has been completed
+            }
+
+            logger.newline()
+
+            interaction.reply(output)
         }
     }
 }
