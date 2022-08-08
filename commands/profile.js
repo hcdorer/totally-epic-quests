@@ -64,6 +64,7 @@ module.exports = {
                 }
                 output += `\nLevel: ${players[member.user.id].level}`
                 output += `\nExperience: ${players[member.user.id].experience}/${players[member.user.id].expToNextLevel}`
+                output += `\nCurrent quest: ${players[member.user.id].currentQuest}`
 
                 interaction.reply(output)
             }
