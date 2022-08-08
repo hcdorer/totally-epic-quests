@@ -5,6 +5,8 @@ class GuildConfig {
     modChannel = ""
     /** @type {string} */
     messageChannel = ""
+    /** @type {Object} */
+    turnInMessages = {}
 }
 
 module.exports = GuildConfig

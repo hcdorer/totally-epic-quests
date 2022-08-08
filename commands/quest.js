@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require(`discord.js`)
-const { loadQuests, saveQuests, loadPlayers, savePlayers, loadConfig } = require(`../game/gameData.js`)
+const { loadQuests, saveQuests, loadPlayers, savePlayers, loadConfig, saveConfig } = require(`../game/gameData.js`)
 const Quest = require(`../game/quest.js`)
+const TurnInMessage = require("../game/turnInMessage.js")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -235,21 +236,20 @@ module.exports = {
             
             let players = loadPlayers(logger, interaction.guildId)
 
-            if(!players[interaction.user.id]) {
+            if(!players[interaction.user.id].currentQuest) {
                 logger.log(`${interaction.user.tag} does not have a current quest`)
                 logger.newline()
 
                 return interaction.reply(`You don't have a quest to turn in!`)
             }
 
-            const config = loadConfig(logger, interaction.guildId)
+            let config = loadConfig(logger, interaction.guildId)
 
             logger.log(`Turning in quest ${players[interaction.user.id].currentQuest}`)
 
             interaction.guild.channels.fetch(config.modChannel)
                 .then(channel => {
                     logger.log(`Sending approval request to the server's mod channel`)
-                    logger.newline()
 
                     const buttons = new ActionRowBuilder()
                         .addComponents(
@@ -262,8 +262,16 @@ module.exports = {
                                 .setLabel(`Deny`)
                                 .setStyle(ButtonStyle.Danger)
                         )
-
+                    
                     channel.send({content: `${interaction.member.displayName} is turning in the ${players[interaction.user.id].currentQuest} quest!`, components: [buttons]})
+                        .then(message => {
+                            logger.log(`Registering the approval request message in the config file`)
+
+                            config.turnInMessages[message.id] = new TurnInMessage(interaction.user.id, players[interaction.user.id].currentQuest)
+                            saveConfig(logger, interaction.guildId, config)
+
+                            logger.newline()
+                        })
                 })
 
             interaction.reply(`Turning in your quest!  A moderator must approve it before you can claim your reward.`)
