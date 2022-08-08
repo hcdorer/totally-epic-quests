@@ -34,8 +34,17 @@ for(const file of commandFiles) {
     client.commands.set(command.data.name, command)
 }
 
+client.buttons = new Collection()
+const buttonsPath = path.join(__dirname, `buttons`)
+const buttonFiles = fs.readdirSync(buttonsPath).filter(file => file.endsWith(`.js`))
+
+for(const file of buttonFiles) {
+    const filePath = path.join(buttonsPath, file)
+    const button = require(filePath)
+
+    client.buttons.set(button.name, button)
+}
+
 logger.log(`Logger initialized; logging to file ${logger.filePath}`)
 
 client.login(token)
-
-module.exports = logger
