@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
+const { SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require(`discord.js`)
 const { loadQuests, saveQuests, loadPlayers, savePlayers, loadConfig } = require(`../game/gameData.js`)
 const Quest = require(`../game/quest.js`)
 
@@ -242,7 +242,7 @@ module.exports = {
                 return interaction.reply(`You don't have a quest to turn in!`)
             }
 
-            let config = loadConfig(logger, interaction.guildId)
+            const config = loadConfig(logger, interaction.guildId)
 
             logger.log(`Turning in quest ${players[interaction.user.id].currentQuest}`)
 
@@ -251,7 +251,19 @@ module.exports = {
                     logger.log(`Sending approval request to the server's mod channel`)
                     logger.newline()
 
-                    channel.send(`${interaction.member.displayName} is turning in the ${players[interaction.user.id].currentQuest} quest!`)
+                    const buttons = new ActionRowBuilder()
+                        .addComponents(
+                            new ButtonBuilder()
+                                .setCustomId(`approve`)
+                                .setLabel(`Approve`)
+                                .setStyle(ButtonStyle.Success),
+                            new ButtonBuilder()
+                                .setCustomId(`deny`)
+                                .setLabel(`Deny`)
+                                .setStyle(ButtonStyle.Danger)
+                        )
+
+                    channel.send({content: `${interaction.member.displayName} is turning in the ${players[interaction.user.id].currentQuest} quest!`, components: [buttons]})
                 })
 
             interaction.reply(`Turning in your quest!  A moderator must approve it before you can claim your reward.`)
