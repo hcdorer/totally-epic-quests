@@ -8,5 +8,7 @@ module.exports = {
         logger.log(`${interaction.user.tag} used /ping`)
         
         await interaction.reply({content: `Pong!`, ephemeral: true})
+
+        logger.newline()
     }
 }

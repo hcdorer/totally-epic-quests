@@ -28,12 +28,16 @@ class Logger {
      */
     log(message) {
         const output = `${Logger.now()}: ${message}`
+        
         console.log(output)
-        fs.appendFile(this.filePath, `${output}\n`, (err) => {
-            if(err) {
-                throw err
-            }
-        })
+        fs.appendFileSync(this.filePath, `${output}\n`)
+    }
+
+    newline() {
+        const output = ``
+        
+        console.log(output)
+        fs.appendFileSync(this.filePath, `${output}\n`)
     }
 }
 

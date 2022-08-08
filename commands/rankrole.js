@@ -42,11 +42,12 @@ module.exports = {
             const rankRole = new RankRole(role.id, role.name, attainedAtLevel)
 
             config.rankRoles.push(rankRole)
-
-            logger.log(`Added RankRole ${JSON.stringify(rankRole)} to the list`)
+            saveConfig(logger, interaction.guildId, config)
+            
             interaction.reply({content: `Added the ${role.name} role as a rank role!`, ephemeral: true})
 
-            saveConfig(logger, interaction.guildId, config)
+            logger.log(`Added RankRole ${JSON.stringify(rankRole)} to the list`)
+            logger.newline()
         }
         if(interaction.options.getSubcommand() === `remove`) {
             logger.log(`Subcommand: remove`)
@@ -61,11 +62,12 @@ module.exports = {
             
             const index = config.rankRoles.indexOf(rankRole)
             config.rankRoles.splice(index, 1)
+            saveConfig(logger, interaction.guildId, config)
 
             logger.log(`Removed RankRole ${JSON.stringify(rankRole)} from the list`)
-            interaction.reply({content: `Removed the ${role.name} role from the list of rank roles!`, ephemeral: true})
+            logger.newline()
 
-            saveConfig(logger, interaction.guildId, config)
+            interaction.reply({content: `Removed the ${role.name} role from the list of rank roles!`, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `view`) {
             logger.log(`Subcommand: view`)

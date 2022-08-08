@@ -31,6 +31,8 @@ module.exports = {
 
             if(!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
                 logger.log(`${interaction.user.tag} had insufficient permissions`)
+                logger.newline()
+
                 return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true})
             }
 
@@ -39,9 +41,11 @@ module.exports = {
             let reward = interaction.options.getNumber(`reward`)
 
             quests[name] = new Quest(description, reward)
-            logger.log(`Added new quest "${name}": ${JSON.stringify(quests[name])}`)
-
             saveQuests(logger, interaction.guildId, quests)
+
+            logger.log(`Added new quest "${name}": ${JSON.stringify(quests[name])}`)
+            logger.newline()
+
             interaction.reply({content: `Quest created!`, ephemeral: true})
         }
     }

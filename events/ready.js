@@ -5,5 +5,6 @@ module.exports = {
     once: true,
     execute(logger, client) {
         logger.log(`Logged in as ${client.user.tag}`)
+        logger.newline()
     }
 }

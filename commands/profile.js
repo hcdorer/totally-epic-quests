@@ -25,14 +25,20 @@ module.exports = {
             logger.log(`Subcommand: create`)
 
             if(players[interaction.user.id]) {
+                logger.log(`${interaction.user.tag} already has a Totally Epic Quests profile in ${interaction.guild.name} (id: ${interaction.guildId})`)
+                logger.newline()
+
                 return interaction.reply(`${interaction.member.displayName}, you have already begun Totally Epic Quests!`)
             }
 
             let newPlayer = new Player()
             players[interaction.user.id] = newPlayer
             savePlayers(logger, interaction.guildId, players)
-            logger.log(`Created new Player ${JSON.stringify(newPlayer)} (${interaction.user.id})`)
+            
             interaction.reply(`${interaction.member.displayName}, your Totally Epic Quests have begun!`)
+
+            logger.log(`Created new Player ${JSON.stringify(newPlayer)} (${interaction.user.id})`)
+            logger.newline()
         }
         if(interaction.options.getSubcommand() === `view`) {
             logger.log(`Subcommand: view`)
@@ -41,6 +47,8 @@ module.exports = {
                 logger.log(`Viewing Player ${JSON.stringify(players[member.user.id])} (${member.user.tag})`)
 
                 if(!players[member.user.id]) {
+                    logger.log(`Could not find the requested profile`)
+
                     if(isSelf) {
                         return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
                     } else {
@@ -65,6 +73,8 @@ module.exports = {
             } else {
                 showProfile(interaction.options.getMember(`member`), interaction.user.id === interaction.options.getMember(`member`).user.id)
             }
+
+            logger.newline()
         }
     }
 }

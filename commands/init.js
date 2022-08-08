@@ -22,5 +22,7 @@ module.exports = {
         }
 
         interaction.reply(`Totally Epic Quests has been initialized in this server!`)
+
+        logger.log(`Initialized Totally Epic Quests in ${interaction.guild.name} (id: ${interaction.guildId})`)
     }
 }
