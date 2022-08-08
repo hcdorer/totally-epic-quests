@@ -1,6 +1,7 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
-const { loadQuests, saveQuests, loadPlayers, savePlayers } = require(`../game/gameData.js`)
+const { SlashCommandBuilder, PermissionFlagsBits, CommandInteractionOptionResolver } = require(`discord.js`)
+const { loadQuests, saveQuests, loadPlayers, savePlayers, loadConfig } = require(`../game/gameData.js`)
 const Quest = require(`../game/quest.js`)
+const Logger = require("../utils/logger.js")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -59,7 +60,10 @@ module.exports = {
             .addStringOption(option => option
                 .setName(`name`)
                 .setDescription(`The name of the quest you wish to accept`)
-                .setRequired(true))),
+                .setRequired(true)))
+        .addSubcommand(subcommand => subcommand
+            .setName(`turn-in`)
+            .setDescription(`Turn in your current quest and claim the reward (requires moderator approval).`)),
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /quest`)
 
@@ -226,6 +230,34 @@ module.exports = {
             logger.newline()
 
             interaction.reply(`Quest accepted!`)
+        }
+        if(interaction.options.getSubcommand() === `turn-in`) {
+            logger.log(`Subcommand: turn-in`)
+            
+            let players = loadPlayers(logger, interaction.guildId)
+
+            if(!players[interaction.user.id]) {
+                logger.log(`${interaction.user.tag} does not have a current quest`)
+                logger.newline()
+
+                return interaction.reply(`You don't have a quest to turn in!`)
+            }
+
+            let config = loadConfig(logger, interaction.guildId)
+
+            logger.log(`Turning in quest ${players[interaction.user.id].currentQuest}`)
+
+            interaction.guild.channels.fetch(config.modChannel)
+                .then(channel => {
+                    logger.log(`Sending approval request to the server's mod channel`)
+                    logger.newline()
+                    
+                    channel.send(`${interaction.member.displayName} is turning in the ${players[interaction.user.id].currentQuest} quest!`)
+                })
+            
+            
+
+            interaction.reply(`Turning in your quest!  A moderator must approve it before you can claim your reward.`)
         }
     }
 }

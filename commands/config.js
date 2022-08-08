@@ -111,7 +111,7 @@ module.exports = {
                                         resolve(output)
                                     }
                                 })
-                            })
+                        })
                     })
                 }
 
