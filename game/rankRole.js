@@ -8,9 +8,8 @@ class RankRole {
      * @param {string} id
      * @param {number} attainedAtLevel 
      */
-    constructor(id, name, attainedAtLevel) {
+    constructor(id, attainedAtLevel) {
         this.id = id
-        this.name = name
         this.attainedAtLevel = attainedAtLevel
     }
 }
