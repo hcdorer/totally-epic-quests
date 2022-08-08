@@ -97,6 +97,7 @@ module.exports = {
                 }
                 
                 let buildOutput = () => {
+                    // eslint-disable-next-line no-unused-vars
                     return new Promise((resolve, reject) => {
                         let output = `The rank roles for this server are:\n`
 
@@ -129,7 +130,7 @@ module.exports = {
             logger.log(`Message channel set to #${channel.name} (id: ${channel.id})`)
             logger.newline()
 
-            interaction.reply({content: `Set message channel to #${channel.name}!`})
+            interaction.reply({content: `Set message channel to #${channel.name}!`, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `set-mod-channel`) {
             logger.log(`Subcommand: set-mod-channel`)
@@ -142,7 +143,7 @@ module.exports = {
             logger.log(`Mod channel set to #${channel.name} (id: ${channel.id})`)
             logger.newline()
 
-            interaction.reply({content: `Set mod channel to #${channel.name}!`})
+            interaction.reply({content: `Set mod channel to #${channel.name}!`, ephemeral: true})
         }
     }
 }

@@ -1,6 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
-const fs = require(`fs`)
-const path = require(`path`)
 const { savePlayers, saveQuests, saveConfig } = require(`../game/gameData.js`)
 const GuildConfig = require(`../game/guildConfig.js`)
 

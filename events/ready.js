@@ -1,5 +1,3 @@
-const { execute } = require(`../commands/ping.js`);
-
 module.exports = {
     name: "ready",
     once: true,

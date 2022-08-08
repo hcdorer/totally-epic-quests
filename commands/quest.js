@@ -1,7 +1,6 @@
-const { SlashCommandBuilder, PermissionFlagsBits, CommandInteractionOptionResolver } = require(`discord.js`)
+const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
 const { loadQuests, saveQuests, loadPlayers, savePlayers, loadConfig } = require(`../game/gameData.js`)
 const Quest = require(`../game/quest.js`)
-const Logger = require("../utils/logger.js")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -67,7 +66,7 @@ module.exports = {
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /quest`)
 
-        quests = loadQuests(logger, interaction.guildId)
+        let quests = loadQuests(logger, interaction.guildId)
 
         if(interaction.options.getSubcommand() === `create`) {
             logger.log(`Subcommand: create`)
@@ -251,11 +250,9 @@ module.exports = {
                 .then(channel => {
                     logger.log(`Sending approval request to the server's mod channel`)
                     logger.newline()
-                    
+
                     channel.send(`${interaction.member.displayName} is turning in the ${players[interaction.user.id].currentQuest} quest!`)
                 })
-            
-            
 
             interaction.reply(`Turning in your quest!  A moderator must approve it before you can claim your reward.`)
         }

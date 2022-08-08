@@ -1,5 +1,4 @@
 const { SlashCommandBuilder } = require(`discord.js`)
-const path = require(`path`)
 const Player = require(`../game/player.js`)
 const { loadPlayers, savePlayers } = require("../game/gameData.js")
 

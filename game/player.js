@@ -1,5 +1,3 @@
-const path = require(`path`)
-
 class Player {
     /** @type {number} */
     level = 1

@@ -1,8 +1,5 @@
-const { strict } = require("assert")
-const { captureRejectionSymbol } = require("events")
 const fs = require(`fs`)
 const path = require(`path`)
-const GuildConfig = require("./guildConfig")
 
 function saveData(data, filename) {
     fs.writeFile(path.join(__dirname, `..`, `saves`, filename), JSON.stringify(data), (err) => {
