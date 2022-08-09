@@ -236,6 +236,13 @@ module.exports = {
             
             let players = loadPlayers(logger, interaction.guildId)
 
+            if(!players[interaction.user.id]) {
+                logger.log(`${interaction.user.tag} does not have a profile`)
+                logger.newline()
+
+                return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
+            }
+            
             if(!players[interaction.user.id].currentQuest) {
                 logger.log(`${interaction.user.tag} does not have a current quest`)
                 logger.newline()

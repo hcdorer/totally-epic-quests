@@ -1,9 +1,17 @@
 const { loadConfig, saveConfig } = require(`../game/gameData.js`)
+const PermissionFlagsBits = require(`discord.js`)
 
 module.exports = {
     name: `deny`,
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} pressed a "deny" button on message ${interaction.message.id}`)
+
+        if(!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
+            logger.log(`${interaction.user.tag} had insufficient permissions`)
+            logger.newline()
+
+            return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true})
+        }
 
         const config = loadConfig(logger, interaction.guildId)
         const turnInMessage = config.turnInMessages[interaction.message.id]
