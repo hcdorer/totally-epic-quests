@@ -263,7 +263,7 @@ module.exports = {
                                 .setStyle(ButtonStyle.Danger)
                         )
                     
-                    channel.send({content: `${interaction.member.displayName} is turning in the ${players[interaction.user.id].currentQuest} quest!`, components: [buttons]})
+                    channel.send({content: `${interaction.member.displayName} wants to turn in the ${players[interaction.user.id].currentQuest} quest!`, components: [buttons]})
                         .then(message => {
                             logger.log(`Registering the approval request message in the config file`)
 
