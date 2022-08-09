@@ -1,5 +1,5 @@
 const { loadConfig, saveConfig } = require(`../game/gameData.js`)
-const PermissionFlagsBits = require(`discord.js`)
+const { PermissionFlagsBits } = require(`discord.js`)
 
 module.exports = {
     name: `deny`,

@@ -1,5 +1,5 @@
 const { loadConfig, loadQuests, loadPlayers, savePlayers, saveQuests, saveConfig } = require("../game/gameData")
-const PermissionFlagsBits = require(`discord.js`)
+const { PermissionFlagsBits } = require(`discord.js`)
 
 module.exports = {
     name: `approve`,
