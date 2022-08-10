@@ -131,7 +131,10 @@ module.exports = {
             let output = `The Totally Epic Quests in this server are:\n`
 
             for(const name in quests) {
-                output += `\n${name}` // TODO: include check mark emoji if the quest has been completed
+                output += `\n${name}`
+                if(quests[name].completedBy.includes(interaction.user.id)) {
+                    output += ` ✅`
+                }
             }
 
             logger.newline()

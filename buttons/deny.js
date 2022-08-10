@@ -28,7 +28,6 @@ module.exports = {
         logger.log(`Successfully denied the turn-in request`)
 
         saveConfig(logger, interaction.guildId, config)
-
         logger.newline()
 
         interaction.update({content: `Turn-in request denied!`, components: []})
