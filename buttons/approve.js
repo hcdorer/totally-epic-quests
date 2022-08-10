@@ -1,5 +1,6 @@
-const { loadConfig, loadQuests, loadPlayers, savePlayers, saveQuests, saveConfig } = require("../game/gameData")
+const { loadConfig, loadQuests, loadPlayers, savePlayers, saveQuests, saveConfig } = require("../game/gameData.js")
 const { PermissionFlagsBits } = require(`discord.js`)
+const { levelUp } = require(`../game/player.js`)
 
 module.exports = {
     name: `approve`,
@@ -42,7 +43,13 @@ module.exports = {
             return interaction.update({content: `There is no quest named ${turnInMessage.questName}`, components: []})
         }
 
+        let leveledUp = false
         players[turnInMessage.playerId].experience += quests[turnInMessage.questName].reward
+        while(players[turnInMessage.playerId].experience >= players[turnInMessage.playerId].expToNextLevel) {
+            levelUp(players[turnInMessage.playerId])
+            leveledUp = true
+        }
+        
         players[turnInMessage.playerId].currentQuest = ""
         quests[turnInMessage.questName].completedBy.push(turnInMessage.playerId)
         delete config.turnInMessages[interaction.message.id]
@@ -59,6 +66,11 @@ module.exports = {
 
         interaction.guild.channels.fetch(config.messageChannel)
             .then(channel => interaction.client.users.fetch(turnInMessage.playerId)
-                .then(user => channel.send(`Congratulations ${user}, you have completed the ${turnInMessage.questName} quest and recieved your rewards!`)))
+                .then(user => {
+                    channel.send(`Congratulations ${user}, you have completed the ${turnInMessage.questName} quest and recieved your rewards!`)
+                    if(leveledUp) {
+                        channel.send(`You've also leveled up to level ${players[turnInMessage.playerId].level}!`)
+                    }
+                }))
     }
 }
