@@ -16,7 +16,7 @@ module.exports = {
                 .setName(`member`)
                 .setDescription(`The member whose profile you want to view.  Leave blank to view your profile.`))),
     async execute(logger, interaction) {
-        logger.log(`${interaction.user.tag} has used /profile`)
+        logger.log(`${interaction.user.tag} used /profile`)
 
         let players = loadPlayers(logger, interaction.guildId)
 
