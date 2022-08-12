@@ -21,7 +21,10 @@ module.exports = {
             .addNumberOption(option => option
                 .setName(`reward`)
                 .setDescription(`How much experience a member recieves upon completing the quest`)
-                .setRequired(true)))
+                .setRequired(true))
+            .addStringOption(option => option
+                .setName(`prerequisite`)
+                .setDescription(`The quest to be completed before accepting this quest`)))
         .addSubcommand(subcommand => subcommand
             .setName(`delete`)
             .setDescription(`Delete an existing quest.`)
@@ -46,7 +49,10 @@ module.exports = {
             .addNumberOption(option => option
                 .setName(`reward`)
                 .setDescription(`How much experience a member recieves upon completing the quest`)
-                .setRequired(true)))
+                .setRequired(true))
+            .addStringOption(option => option
+                .setName(`prerequisite`)
+                .setDescription(`The quest to be completed before accepting this quest`)))
         .addSubcommand(subcommand => subcommand
             .setName(`view`)
             .setDescription(`View more info on a specific quest`)
@@ -67,7 +73,7 @@ module.exports = {
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /quest`)
 
-        let quests = loadQuests(logger, interaction.guildId)
+        const quests = loadQuests(logger, interaction.guildId)
 
         if(interaction.options.getSubcommand() === `create`) {
             logger.log(`Subcommand: create`)
@@ -79,9 +85,24 @@ module.exports = {
                 return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true})
             }
 
-            let name = interaction.options.getString(`name`)
-            let description = interaction.options.getString(`description`)
-            let reward = interaction.options.getNumber(`reward`)
+            const name = interaction.options.getString(`name`)
+            const description = interaction.options.getString(`description`)
+            const reward = interaction.options.getNumber(`reward`)
+            const prerequisiteName = interaction.options.getString(`prerequisite`)
+            
+            if(prerequisiteName) {
+                if(!quests[prerequisiteName]) {
+                    logger.log(`The quest "${prerequisiteName}" does not exist, so it cannot be a prerequisite`)
+                    logger.newline()
+
+                    return interaction.reply({content: `There is no quest called "${prerequisiteName}", so it cannot be a prerequisite!`, ephemeral: true})
+                }
+            }
+            
+            let prerequisite = ""
+            if(prerequisiteName) {
+                prerequisite = prerequisiteName
+            }
             
             if(quests[name]) {
                 logger.log(`A quest named ${name} already exists`)
@@ -90,10 +111,10 @@ module.exports = {
                 return interaction.reply({content: `That quest already exists!`, ephemeral: true})
             }
 
-            quests[name] = new Quest(description, reward)
-            saveQuests(logger, interaction.guildId, quests)
-
+            quests[name] = new Quest(description, reward, prerequisite)
             logger.log(`Added new quest "${name}": ${JSON.stringify(quests[name])}`)
+
+            saveQuests(logger, interaction.guildId, quests)
             logger.newline()
 
             interaction.reply({content: `Quest created!`, ephemeral: true})
@@ -151,9 +172,24 @@ module.exports = {
                 return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true})
             }
 
-            let name = interaction.options.getString(`name`)
-            let description = interaction.options.getString(`description`)
-            let reward = interaction.options.getNumber(`reward`)
+            const name = interaction.options.getString(`name`)
+            const description = interaction.options.getString(`description`)
+            const reward = interaction.options.getNumber(`reward`)
+            const prerequisiteName = interaction.options.getString(`prerequisite`)
+
+            if(prerequisiteName) {
+                if(!quests[prerequisiteName]) {
+                    logger.log(`The quest ${prerequisiteName} does not exist, so it cannot be a prerequisite`)
+                    logger.newline()
+
+                    return interaction.reply({content: `There is no quest called ${prerequisiteName}, so it cannot be a prerequisite!`, ephemeral: true})
+                }
+            }
+
+            let prerequisite = ""
+            if(prerequisiteName) {
+                prerequisite = prerequisiteName
+            }
 
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
@@ -162,10 +198,10 @@ module.exports = {
                 return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true})
             }
 
-            quests[name] = new Quest(description, reward)
-            saveQuests(logger, interaction.guildId, quests)
-
+            quests[name] = new Quest(description, reward, prerequisite)
             logger.log(`The "${name}" quest is now: ${JSON.stringify(quests[name])}`)
+
+            saveQuests(logger, interaction.guildId, quests)
             logger.newline()
 
             interaction.reply({content: `Quest edited!`, ephemeral: true})
@@ -188,6 +224,10 @@ module.exports = {
             output += `\n${quests[name].description}`
             output += `\nReward for completion: ${quests[name].reward}`
 
+            if(quests[name].prerequisite) {
+                output += `\nPrerequisite quest: ${quests[name].prerequisite}`
+            }
+
             logger.newline()
 
             interaction.reply(output)
@@ -195,8 +235,8 @@ module.exports = {
         if(interaction.options.getSubcommand() === `accept`) {
             logger.log(`Subcommand: accept`)
 
-            let name = interaction.options.getString(`name`)
-            let players = loadPlayers(logger, interaction.guildId)
+            const name = interaction.options.getString(`name`)
+            const players = loadPlayers(logger, interaction.guildId)
 
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
@@ -219,11 +259,20 @@ module.exports = {
                 return interaction.reply(`You have already completed ${name}!`)
             }
 
-            if(players[interaction.user.id].currentQuest === name) {
-                logger.log(`${interaction.user.tag} has already accepted quest "${name}"`)
+            if(quests[quests[name].prerequisite]) {
+                if(!quests[quests[name].prerequisite].completedBy.includes(interaction.user.id)) {
+                    logger.log(`${interaction.user.tag} has not completed the prerequisite quest ${quests[name].prerequisite}`)
+                    logger.newline()
+
+                    return interaction.reply(`You must complete ${quests[name].prerequisite} before accepting this quests!`)
+                }
+            }
+
+            if(players[interaction.user.id].currentQuest) {
+                logger.log(`${interaction.user.tag} has already accepted a quest`)
                 logger.newline()
 
-                return interaction.reply(`You have already accepted ${name}!`)
+                return interaction.reply(`You have already accepted a quest!`)
             }
 
             players[interaction.user.id].currentQuest = name

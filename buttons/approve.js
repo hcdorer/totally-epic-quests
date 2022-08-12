@@ -63,8 +63,6 @@ module.exports = {
         savePlayers(logger, interaction.guildId, players)
         saveQuests(logger, interaction.guildId, quests)
         saveConfig(logger, interaction.guildId, config)
-        
-        logger.newline()
 
         interaction.update({content: `Turn-in request approved!`, components: []})
 
