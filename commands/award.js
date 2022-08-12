@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
 const { loadPlayers, savePlayers, loadConfig } = require("../game/gameData")
 const { levelUp } = require(`../game/player.js`)
+const { addRankRole } = require("../game/rankRole")
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -21,12 +22,12 @@ module.exports = {
     async execute(logger, interaction) {
         logger.log(`${interaction.user.tag} used /award`)
 
-        let user = interaction.options.getUser(`member`)
-        let amount = interaction.options.getNumber(`amount`)
-        let reason = interaction.options.getString(`reason`)
+        const user = interaction.options.getUser(`member`)
+        const amount = interaction.options.getNumber(`amount`)
+        const reason = interaction.options.getString(`reason`)
 
-        let players = loadPlayers(logger, interaction.guildId)
-        let config = loadConfig(logger, interaction.guildId)
+        const players = loadPlayers(logger, interaction.guildId)
+        const config = loadConfig(logger, interaction.guildId)
 
         if(!players[user.id]) {
             logger.log(`${user.tag} does not have a profile`)
@@ -43,8 +44,11 @@ module.exports = {
         }
 
         logger.log(`${user.tag} was given ${amount} experience for: ${reason}`)
+        logger.log(`The player is now level ${players[user.id].level} and has ${players[user.id].experience} experience`)
+
+        addRankRole(logger, players[user.id], user.id, config, interaction.guild)
+
         savePlayers(logger, interaction.guildId, players)
-        logger.newline()
 
         interaction.reply({content: `Experience awarded!`, ephemeral: true})
 

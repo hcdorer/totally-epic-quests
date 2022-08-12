@@ -1,6 +1,7 @@
 const { loadConfig, loadQuests, loadPlayers, savePlayers, saveQuests, saveConfig } = require("../game/gameData.js")
 const { PermissionFlagsBits } = require(`discord.js`)
 const { levelUp } = require(`../game/player.js`)
+const { addRankRole } = require("../game/rankRole.js")
 
 module.exports = {
     name: `approve`,
@@ -55,6 +56,9 @@ module.exports = {
         delete config.turnInMessages[interaction.message.id]
 
         logger.log(`Successfully approved the turn-in request`)
+        logger.log(`The player is now level ${players[turnInMessage.playerId].level} and has ${players[turnInMessage.playerId].experience} experience`)
+
+        addRankRole(logger, players[turnInMessage.playerId], turnInMessage.playerId, config, interaction.guild)
 
         savePlayers(logger, interaction.guildId, players)
         saveQuests(logger, interaction.guildId, quests)

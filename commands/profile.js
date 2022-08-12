@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require(`discord.js`)
-const Player = require(`../game/player.js`)
+const { Player } = require(`../game/player.js`)
 const { loadPlayers, savePlayers } = require("../game/gameData.js")
 
 module.exports = {
@@ -43,8 +43,6 @@ module.exports = {
             logger.log(`Subcommand: view`)
 
             let showProfile = (member, isSelf) => {
-                logger.log(`Viewing Player ${JSON.stringify(players[member.user.id])} (${member.user.tag})`)
-
                 if(!players[member.user.id]) {
                     logger.log(`Could not find the requested profile`)
 
@@ -54,6 +52,8 @@ module.exports = {
                         return interaction.reply(`${member.displayName} does not have a Totally Epic Quests profile!`)
                     }
                 }
+                
+                logger.log(`Viewing Player ${JSON.stringify(players[member.user.id])} (${member.user.tag})`)
 
                 let output = ``
                 if(isSelf) {
