@@ -6,12 +6,11 @@ const { addRankRole } = require("../game/rankRole.js")
 module.exports = {
     name: `approve`,
     async execute(logger, interaction) {
+        logger.newline()
         logger.log(`${interaction.user.tag} pressed an "approve" button on message ${interaction.message.id}`)
 
         if(!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
             logger.log(`${interaction.user.tag} had insufficient permissions`)
-            logger.newline()
-
             return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true})
         }
         
@@ -20,8 +19,6 @@ module.exports = {
 
         if(!turnInMessage) {
             logger.log(`There was no turn in message data associated with this message`)
-            logger.newline()
-
             return interaction.update({content: `This message did not have any associated turn-in request data!  How strange...`, components: []})
         }
 
@@ -37,7 +34,6 @@ module.exports = {
         const quests = loadQuests(logger, interaction.guildId)
         if(!quests[turnInMessage.questName]) {
             logger.log(`There is no quest named ${turnInMessage.questName}`)
-            logger.newline()
 
             players[turnInMessage.playerId].currentQuest = ""
             delete config.turnInMessages[interaction.message.id]

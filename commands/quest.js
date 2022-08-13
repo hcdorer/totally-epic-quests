@@ -72,6 +72,7 @@ module.exports = {
             .setName(`turn-in`)
             .setDescription(`Turn in your current quest and claim the reward (requires moderator approval).`)),
     async execute(logger, interaction) {
+        logger.newline()
         logger.log(`${interaction.user.tag} used /quest`)
 
         const quests = loadQuests(logger, interaction.guildId)
@@ -81,8 +82,6 @@ module.exports = {
 
             if(!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
                 logger.log(`${interaction.user.tag} had insufficient permissions`)
-                logger.newline()
-
                 return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true})
             }
 
@@ -94,8 +93,6 @@ module.exports = {
             if(prerequisiteName) {
                 if(!quests[prerequisiteName]) {
                     logger.log(`The quest "${prerequisiteName}" does not exist, so it cannot be a prerequisite`)
-                    logger.newline()
-
                     return interaction.reply({content: `There is no quest called "${prerequisiteName}", so it cannot be a prerequisite!`, ephemeral: true})
                 }
             }
@@ -107,8 +104,6 @@ module.exports = {
             
             if(quests[name]) {
                 logger.log(`A quest named ${name} already exists`)
-                logger.newline()
-
                 return interaction.reply({content: `That quest already exists!`, ephemeral: true})
             }
 
@@ -116,7 +111,6 @@ module.exports = {
             logger.log(`Added new quest "${name}": ${JSON.stringify(quests[name])}`)
 
             saveQuests(logger, interaction.guildId, quests)
-            logger.newline()
 
             interaction.reply({content: `Quest created!`, ephemeral: true})
         }
@@ -124,9 +118,7 @@ module.exports = {
             logger.log(`Subcommand: delete`)
 
             if(!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-                logger.log(`${interaction.user.tag} had insufficient permissions`)
-                logger.newline()
-                
+                logger.log(`${interaction.user.tag} had insufficient permissions`)                
                 return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true})
             }
 
@@ -134,8 +126,6 @@ module.exports = {
 
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
-                logger.newline()
-
                 return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true})
             }
 
@@ -143,7 +133,6 @@ module.exports = {
             saveQuests(logger, interaction.guildId, quests)
 
             logger.log(`Deleted the "${name}" quest`)
-            logger.newline()
 
             interaction.reply({content: `Quest deleted!`, ephemeral: true})
         }
@@ -159,8 +148,6 @@ module.exports = {
                 }
             }
 
-            logger.newline()
-
             interaction.reply(output)
         }
         if(interaction.options.getSubcommand() === `edit`) {
@@ -168,8 +155,6 @@ module.exports = {
 
             if(!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
                 logger.log(`${interaction.user.tag} had insufficient permissions`)
-                logger.newline()
-
                 return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true})
             }
 
@@ -181,8 +166,6 @@ module.exports = {
 
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
-                logger.newline()
-
                 return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true})
             }
 
@@ -200,8 +183,6 @@ module.exports = {
             if(prerequisiteName) {
                 if(!quests[prerequisiteName]) {
                     logger.log(`The quest ${prerequisiteName} does not exist, so it cannot be a prerequisite`)
-                    logger.newline()
-
                     return interaction.reply({content: `There is no quest called ${prerequisiteName}, so it cannot be a prerequisite!`, ephemeral: true})
                 }
                 
@@ -220,7 +201,6 @@ module.exports = {
             }
 
             saveQuests(logger, interaction.guildId, quests)
-            logger.newline()
 
             interaction.reply({content: `Quest edited!`, ephemeral: true})
         }
@@ -231,8 +211,6 @@ module.exports = {
             
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
-                logger.newline()
-
                 return interaction.reply(`There's no quest named ${name}!`)
             }
 
@@ -246,8 +224,6 @@ module.exports = {
                 output += `\nPrerequisite quest: ${quests[name].prerequisite}`
             }
 
-            logger.newline()
-
             interaction.reply(output)
         }
         if(interaction.options.getSubcommand() === `accept`) {
@@ -258,38 +234,28 @@ module.exports = {
 
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
-                logger.newline()
-
                 return interaction.reply(`There's no quest named ${name}!`)
             }
 
             if(!players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} does not have a profile`)
-                logger.newline()
-
                 return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
             }
 
             if(quests[name].completedBy.includes(interaction.user.id)) {
                 logger.log(`${interaction.user.tag} has already completed quest "${name}"`)
-                logger.newline()
-
                 return interaction.reply(`You have already completed ${name}!`)
             }
 
             if(quests[quests[name].prerequisite]) {
                 if(!quests[quests[name].prerequisite].completedBy.includes(interaction.user.id)) {
                     logger.log(`${interaction.user.tag} has not completed the prerequisite quest ${quests[name].prerequisite}`)
-                    logger.newline()
-
                     return interaction.reply(`You must complete ${quests[name].prerequisite} before accepting this quests!`)
                 }
             }
 
             if(players[interaction.user.id].currentQuest) {
                 logger.log(`${interaction.user.tag} has already accepted a quest`)
-                logger.newline()
-
                 return interaction.reply(`You have already accepted a quest!`)
             }
 
@@ -297,8 +263,6 @@ module.exports = {
             savePlayers(logger, interaction.guildId, players)
             
             logger.log(`${interaction.user.tag} has accepted quest "${name}"`)
-            logger.newline()
-
             interaction.reply(`Quest accepted!`)
         }
         if(interaction.options.getSubcommand() === `turn-in`) {
@@ -308,15 +272,11 @@ module.exports = {
 
             if(!players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} does not have a profile`)
-                logger.newline()
-
                 return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
             }
             
             if(!players[interaction.user.id].currentQuest) {
                 logger.log(`${interaction.user.tag} does not have a current quest`)
-                logger.newline()
-
                 return interaction.reply(`You don't have a quest to turn in!`)
             }
 
@@ -346,8 +306,6 @@ module.exports = {
 
                             config.turnInMessages[message.id] = new TurnInMessage(interaction.user.id, players[interaction.user.id].currentQuest)
                             saveConfig(logger, interaction.guildId, config)
-
-                            logger.newline()
                         })
                 })
 

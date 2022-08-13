@@ -8,6 +8,7 @@ module.exports = {
         .setDescription(`Initialize the bot in this server.  Requires Manage Server permission.`)
         .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild),
     async execute(logger, interaction) {
+        logger.newline()
         logger.log(`${interaction.user.tag} used /init`)
         
         try {

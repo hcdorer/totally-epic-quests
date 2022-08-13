@@ -46,6 +46,7 @@ module.exports = {
                 .setDescription(`The channel to send messages for moderators to`)
                 .setRequired(true))),
     async execute(logger, interaction) {
+        logger.newline()
         logger.log(`${interaction.user.tag} used /config`)
 
         let config = loadConfig(logger, interaction.guildId)
@@ -64,10 +65,8 @@ module.exports = {
                 config.rankRoles.push(rankRole)
                 saveConfig(logger, interaction.guildId, config)
                 
-                interaction.reply({content: `Added the ${role.name} role as a rank role!`, ephemeral: true})
-
                 logger.log(`Added RankRole ${JSON.stringify(rankRole)} to the RankRole list`)
-                logger.newline()
+                interaction.reply({content: `Added the ${role.name} role as a rank role!`, ephemeral: true})
             }
             if(interaction.options.getSubcommand() === `remove`) {
                 logger.log(`Subcommand: remove`)
@@ -85,8 +84,6 @@ module.exports = {
                 saveConfig(logger, interaction.guildId, config)
 
                 logger.log(`Removed RankRole ${JSON.stringify(rankRole)} from the RankRole list`)
-                logger.newline()
-
                 interaction.reply({content: `Removed the ${role.name} role from the list of rank roles!`, ephemeral: true})
             }
             if(interaction.options.getSubcommand() === `view`) {
@@ -128,8 +125,6 @@ module.exports = {
             saveConfig(logger, interaction.guildId, config)
 
             logger.log(`Message channel set to #${channel.name} (id: ${channel.id})`)
-            logger.newline()
-
             interaction.reply({content: `Set message channel to #${channel.name}!`, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `set-mod-channel`) {
@@ -141,8 +136,6 @@ module.exports = {
             saveConfig(logger, interaction.guildId, config)
 
             logger.log(`Mod channel set to #${channel.name} (id: ${channel.id})`)
-            logger.newline()
-
             interaction.reply({content: `Set mod channel to #${channel.name}!`, ephemeral: true})
         }
     }

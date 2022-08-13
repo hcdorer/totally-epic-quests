@@ -16,6 +16,7 @@ module.exports = {
                 .setName(`member`)
                 .setDescription(`The member whose profile you want to view.  Leave blank to view your profile.`))),
     async execute(logger, interaction) {
+        logger.newline()
         logger.log(`${interaction.user.tag} used /profile`)
 
         let players = loadPlayers(logger, interaction.guildId)
@@ -25,8 +26,6 @@ module.exports = {
 
             if(players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} already has a Totally Epic Quests profile in ${interaction.guild.name} (id: ${interaction.guildId})`)
-                logger.newline()
-
                 return interaction.reply(`${interaction.member.displayName}, you have already begun Totally Epic Quests!`)
             }
 
@@ -34,10 +33,8 @@ module.exports = {
             players[interaction.user.id] = newPlayer
             savePlayers(logger, interaction.guildId, players)
             
-            interaction.reply(`${interaction.member.displayName}, your Totally Epic Quests have begun!`)
-
             logger.log(`Created new Player ${JSON.stringify(newPlayer)} (${interaction.user.id})`)
-            logger.newline()
+            interaction.reply(`${interaction.member.displayName}, your Totally Epic Quests have begun!`)
         }
         if(interaction.options.getSubcommand() === `view`) {
             logger.log(`Subcommand: view`)
@@ -73,8 +70,6 @@ module.exports = {
             } else {
                 showProfile(interaction.options.getMember(`member`), interaction.user.id === interaction.options.getMember(`member`).user.id)
             }
-
-            logger.newline()
         }
     }
 }

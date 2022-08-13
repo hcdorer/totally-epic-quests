@@ -20,6 +20,7 @@ module.exports = {
             .setName(`reason`)
             .setDescription(`The reason for awarding this experience`)),
     async execute(logger, interaction) {
+        logger.newline()
         logger.log(`${interaction.user.tag} used /award`)
 
         const user = interaction.options.getUser(`member`)
@@ -31,8 +32,6 @@ module.exports = {
 
         if(!players[user.id]) {
             logger.log(`${user.tag} does not have a profile`)
-            logger.newline()
-
             return interaction.reply(`That user does not have a Totally Epic Quests profile!`)
         }
 
