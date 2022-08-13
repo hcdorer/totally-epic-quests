@@ -97,7 +97,7 @@ module.exports = {
                 }
             }
             
-            let prerequisite = quests[name].prerequisite
+            let prerequisite = prerequisiteName
             if(prerequisiteName) {
                 prerequisite = prerequisiteName
             }
