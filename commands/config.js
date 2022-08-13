@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
 const { loadConfig, saveConfig } = require(`../game/gameData.js`)
-const RankRole = require(`../game/rankRole.js`)
+const { RankRole } = require(`../game/rankRole.js`)
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -59,14 +59,14 @@ module.exports = {
                 const role = interaction.options.getRole(`role`)
                 const attainedAtLevel = interaction.options.getNumber(`level`)
 
-                const rankRole = new RankRole(role.id, role.name, attainedAtLevel)
+                const rankRole = new RankRole(role.id, attainedAtLevel)
 
                 config.rankRoles.push(rankRole)
                 saveConfig(logger, interaction.guildId, config)
                 
                 interaction.reply({content: `Added the ${role.name} role as a rank role!`, ephemeral: true})
 
-                logger.log(`Added RankRole ${JSON.stringify(rankRole)} to the list`)
+                logger.log(`Added RankRole ${JSON.stringify(rankRole)} to the RankRole list`)
                 logger.newline()
             }
             if(interaction.options.getSubcommand() === `remove`) {
@@ -84,7 +84,7 @@ module.exports = {
                 config.rankRoles.splice(index, 1)
                 saveConfig(logger, interaction.guildId, config)
 
-                logger.log(`Removed RankRole ${JSON.stringify(rankRole)} from the list`)
+                logger.log(`Removed RankRole ${JSON.stringify(rankRole)} from the RankRole list`)
                 logger.newline()
 
                 interaction.reply({content: `Removed the ${role.name} role from the list of rank roles!`, ephemeral: true})
