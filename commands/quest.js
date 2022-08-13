@@ -43,13 +43,14 @@ module.exports = {
                 .setDescription(`The name of the quest`)
                 .setRequired(true))
             .addStringOption(option => option
+                .setName(`new-name`)
+                .setDescription(`The new name of the quest`))
+            .addStringOption(option => option
                 .setName(`description`)
-                .setDescription(`A short description for the quest`)
-                .setRequired(true))
+                .setDescription(`A short description for the quest`))
             .addNumberOption(option => option
                 .setName(`reward`)
-                .setDescription(`How much experience a member recieves upon completing the quest`)
-                .setRequired(true))
+                .setDescription(`How much experience a member recieves upon completing the quest`))
             .addStringOption(option => option
                 .setName(`prerequisite`)
                 .setDescription(`The quest to be completed before accepting this quest`)))
@@ -99,7 +100,7 @@ module.exports = {
                 }
             }
             
-            let prerequisite = ""
+            let prerequisite = quests[name].prerequisite
             if(prerequisiteName) {
                 prerequisite = prerequisiteName
             }
@@ -173,23 +174,10 @@ module.exports = {
             }
 
             const name = interaction.options.getString(`name`)
+            const newName = interaction.options.getString(`new-name`)
             const description = interaction.options.getString(`description`)
             const reward = interaction.options.getNumber(`reward`)
             const prerequisiteName = interaction.options.getString(`prerequisite`)
-
-            if(prerequisiteName) {
-                if(!quests[prerequisiteName]) {
-                    logger.log(`The quest ${prerequisiteName} does not exist, so it cannot be a prerequisite`)
-                    logger.newline()
-
-                    return interaction.reply({content: `There is no quest called ${prerequisiteName}, so it cannot be a prerequisite!`, ephemeral: true})
-                }
-            }
-
-            let prerequisite = ""
-            if(prerequisiteName) {
-                prerequisite = prerequisiteName
-            }
 
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
@@ -198,8 +186,38 @@ module.exports = {
                 return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true})
             }
 
-            quests[name] = new Quest(description, reward, prerequisite)
-            logger.log(`The "${name}" quest is now: ${JSON.stringify(quests[name])}`)
+            let newDescription = quests[name].description
+            if(description) {
+                newDescription = description
+            }
+
+            let newReward = quests[name].reward
+            if(reward) {
+                newReward = reward
+            }
+
+            let newPrerequisite = quests[name].prerequisite
+            if(prerequisiteName) {
+                if(!quests[prerequisiteName]) {
+                    logger.log(`The quest ${prerequisiteName} does not exist, so it cannot be a prerequisite`)
+                    logger.newline()
+
+                    return interaction.reply({content: `There is no quest called ${prerequisiteName}, so it cannot be a prerequisite!`, ephemeral: true})
+                }
+                
+                newPrerequisite = prerequisiteName
+            }
+
+            if(newName) {
+                quests[newName] = new Quest(newDescription, newReward, newPrerequisite)
+                delete quests[name]
+                
+                logger.log(`The ${name} quest is now ${newName}: ${JSON.stringify(quests[newName])}`)
+            } else {
+                quests[name] = new Quest(description, reward, newPrerequisite)
+                
+                logger.log(`The "${name}" quest is now: ${JSON.stringify(quests[name])}`)
+            }
 
             saveQuests(logger, interaction.guildId, quests)
             logger.newline()
