@@ -1,0 +1,32 @@
+Psst...since you're a moderator in this server, you also have access to these commands!
+
+/award <member> <amount>
+Award the given server member the given amount of XP.
+
+/config rank-role add <role> <level>
+Add a role to the list of rank roles.  Specify the level at which the role unlocks.
+
+/config rank-role remove <role>
+Remove a role from the list of rank roles.
+
+/config rank-role view
+View a list of the rank roles.
+
+/config set-message-channel <channel>
+Set the channel the bot will use to send messages mentioning members.
+
+/config set-mod-channel <channel>
+Set the channel the bot will send turn-in approval messages to.
+
+/init
+Initialize Totally Epic Quests in your server.  DO NOT USE IT MORE THAN ONCE!  (unless you want to reset the bot)
+
+/quest create <name> <description> <reward> [prerequisite]
+Create a quest named name, with the description description, which rewards reward upon completion, and (optionally) must be completed after the prerequisite quest.
+
+/quest delete <name>
+Deletes the quest named name from the list.
+
+/quest edit <name> [new-name] [description] [reward] [prerequisite]
+Edit the given quest.  You can specify which property/properties of the quest to edit.  (Please message me if you have problems with this!)
+

@@ -1,0 +1,23 @@
+/help
+Yahaha, you found me!
+
+/ping
+Replies with pong!  Try it if you're not sure whether or not the bot is online.
+
+/profile create
+Create a Totally Epic Quests profile in your server.
+
+/profile view [member]
+View someone else's Totally Epic Quests profile.  Leave the member field blank to view your own profile.
+
+/quest accept <name>
+Accept the given quest.
+
+/quest list
+View a list of all the quests in this server.
+
+/quest turn-in
+Turn in your current active quest for approval by the  mods.
+
+/quest view <name>
+View more information about the given quest.
