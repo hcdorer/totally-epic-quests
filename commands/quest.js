@@ -70,7 +70,10 @@ module.exports = {
                 .setRequired(true)))
         .addSubcommand(subcommand => subcommand
             .setName(`turn-in`)
-            .setDescription(`Turn in your current quest and claim the reward (requires moderator approval).`)),
+            .setDescription(`Turn in your current quest and claim the reward (requires moderator approval).`))
+        .addSubcommand(subcommand => subcommand
+            .setName(`cancel`)
+            .setDescription(`Stop attempting your current quest`)),
     async execute(logger, interaction) {
         logger.newline()
         logger.log(`${interaction.user.tag} used /quest`)
@@ -268,7 +271,7 @@ module.exports = {
         if(interaction.options.getSubcommand() === `turn-in`) {
             logger.log(`Subcommand: turn-in`)
             
-            let players = loadPlayers(logger, interaction.guildId)
+            const players = loadPlayers(logger, interaction.guildId)
 
             if(!players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} does not have a profile`)
@@ -280,7 +283,7 @@ module.exports = {
                 return interaction.reply(`You don't have a quest to turn in!`)
             }
 
-            let config = loadConfig(logger, interaction.guildId)
+            const config = loadConfig(logger, interaction.guildId)
 
             logger.log(`Turning in quest ${players[interaction.user.id].currentQuest}`)
 
@@ -310,6 +313,27 @@ module.exports = {
                 })
 
             interaction.reply(`Turning in your quest!  A moderator must approve it before you can claim your reward.`)
+        }
+        if(interaction.options.getSubcommand() === `cancel`) {
+            logger.log(`Subcommand: cancel`)
+
+            const players = loadPlayers(logger, interaction.guildId)
+
+            if(!players[interaction.user.id]) {
+                logger.log(`${interaction.user.tag} does not have a profile`)
+                return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
+            }
+            
+            if(!players[interaction.user.id].currentQuest) {
+                logger.log(`${interaction.user.tag} does not have a current quest`)
+                return interaction.reply(`You don't have a quest to cancel!`)
+            }
+
+            logger.log(`Cancelling ${interaction.user.tag}'s current quest`)
+            players[interaction.user.id].currentQuest = ""
+            savePlayers(logger, interaction.guildId, players)
+
+            interaction.reply(`Quest cancelled!`)
         }
     }
 }

@@ -13,6 +13,9 @@ View someone else's Totally Epic Quests profile.  Leave the member field blank t
 /quest accept <name>
 Accept the given quest.
 
+/quest cancel
+Stop attempting your current quest.
+
 /quest list
 View a list of all the quests in this server.
 
