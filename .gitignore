@@ -2,6 +2,7 @@
 node_modules/
 logs/
 saves/
+.vscode/
 
 #Files
 config.json
