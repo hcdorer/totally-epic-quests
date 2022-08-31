@@ -198,7 +198,7 @@ module.exports = {
                 
                 logger.log(`The ${name} quest is now ${newName}: ${JSON.stringify(quests[newName])}`)
             } else {
-                quests[name] = new Quest(description, reward, newPrerequisite)
+                quests[name] = new Quest(newDescription, newReward, newPrerequisite)
                 
                 logger.log(`The "${name}" quest is now: ${JSON.stringify(quests[name])}`)
             }
