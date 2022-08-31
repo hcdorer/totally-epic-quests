@@ -73,7 +73,7 @@ module.exports = {
             .setDescription(`Turn in your current quest and claim the reward (requires moderator approval).`))
         .addSubcommand(subcommand => subcommand
             .setName(`cancel`)
-            .setDescription(`Stop attempting your current quest`)),
+            .setDescription(`Stop attempting your current quest.`)),
     async execute(logger, interaction) {
         logger.newline()
         logger.log(`${interaction.user.tag} used /quest`)
@@ -115,7 +115,7 @@ module.exports = {
 
             saveQuests(logger, interaction.guildId, quests)
 
-            interaction.reply({content: `Quest created!`, ephemeral: true})
+            interaction.reply({content: `${name} quest created!`, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `delete`) {
             logger.log(`Subcommand: delete`)
@@ -151,7 +151,7 @@ module.exports = {
                 }
             }
 
-            interaction.reply(output)
+            interaction.reply({content: output, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `edit`) {
             logger.log(`Subcommand: edit`)
@@ -205,7 +205,7 @@ module.exports = {
 
             saveQuests(logger, interaction.guildId, quests)
 
-            interaction.reply({content: `Quest edited!`, ephemeral: true})
+            interaction.reply({content: `${name} quest edited!`, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `view`) {
             logger.log(`Subcommand: view`)
@@ -214,7 +214,7 @@ module.exports = {
             
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
-                return interaction.reply(`There's no quest named ${name}!`)
+                return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true})
             }
 
             logger.log(`Viewing quest "${name}"`)
@@ -227,7 +227,7 @@ module.exports = {
                 output += `\nPrerequisite quest: ${quests[name].prerequisite}`
             }
 
-            interaction.reply(output)
+            interaction.reply({content: output, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `accept`) {
             logger.log(`Subcommand: accept`)
@@ -237,36 +237,36 @@ module.exports = {
 
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
-                return interaction.reply(`There's no quest named ${name}!`)
+                return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true})
             }
 
             if(!players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} does not have a profile`)
-                return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
+                return interaction.reply({content: `You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`, ephemeral: true})
             }
 
             if(quests[name].completedBy.includes(interaction.user.id)) {
                 logger.log(`${interaction.user.tag} has already completed quest "${name}"`)
-                return interaction.reply(`You have already completed ${name}!`)
+                return interaction.reply({content: `You have already completed ${name}!`, ephemeral: true})
             }
 
             if(quests[quests[name].prerequisite]) {
                 if(!quests[quests[name].prerequisite].completedBy.includes(interaction.user.id)) {
                     logger.log(`${interaction.user.tag} has not completed the prerequisite quest ${quests[name].prerequisite}`)
-                    return interaction.reply(`You must complete ${quests[name].prerequisite} before accepting this quests!`)
+                    return interaction.reply({content: `You must complete ${quests[name].prerequisite} before accepting this quest!`, ephemeral: true})
                 }
             }
 
             if(players[interaction.user.id].currentQuest) {
                 logger.log(`${interaction.user.tag} has already accepted a quest`)
-                return interaction.reply(`You have already accepted a quest!`)
+                return interaction.reply({content: `You have already accepted a quest!`, ephemeral: true})
             }
 
             players[interaction.user.id].currentQuest = name
             savePlayers(logger, interaction.guildId, players)
             
             logger.log(`${interaction.user.tag} has accepted quest "${name}"`)
-            interaction.reply(`Quest accepted!`)
+            interaction.reply({content: `${name} quest accepted!`, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `turn-in`) {
             logger.log(`Subcommand: turn-in`)
@@ -275,12 +275,12 @@ module.exports = {
 
             if(!players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} does not have a profile`)
-                return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
+                return interaction.reply({content: `You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`, ephemeral: true})
             }
             
             if(!players[interaction.user.id].currentQuest) {
                 logger.log(`${interaction.user.tag} does not have a current quest`)
-                return interaction.reply(`You don't have a quest to turn in!`)
+                return interaction.reply({content: `You don't have a quest to turn in!`, ephemeral: true})
             }
 
             const config = loadConfig(logger, interaction.guildId)
@@ -312,7 +312,7 @@ module.exports = {
                         })
                 })
 
-            interaction.reply(`Turning in your quest!  A moderator must approve it before you can claim your reward.`)
+            interaction.reply({content: `Turning in your ${players[interaction.user.id].currentQuest} quest!  A moderator must approve it before you can claim your reward.`, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `cancel`) {
             logger.log(`Subcommand: cancel`)
@@ -321,19 +321,19 @@ module.exports = {
 
             if(!players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} does not have a profile`)
-                return interaction.reply(`You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`)
+                return interaction.reply({content: `You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`, ephemeral: true})
             }
             
             if(!players[interaction.user.id].currentQuest) {
                 logger.log(`${interaction.user.tag} does not have a current quest`)
-                return interaction.reply(`You don't have a quest to cancel!`)
+                return interaction.reply({content: `You don't have a quest to cancel!`, ephemeral: true})
             }
 
             logger.log(`Cancelling ${interaction.user.tag}'s current quest`)
             players[interaction.user.id].currentQuest = ""
             savePlayers(logger, interaction.guildId, players)
 
-            interaction.reply(`Quest cancelled!`)
+            interaction.reply({content: `${players[interaction.user.id].currentQuest} quest cancelled!`})
         }
     }
 }

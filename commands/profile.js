@@ -26,7 +26,7 @@ module.exports = {
 
             if(players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} already has a Totally Epic Quests profile in ${interaction.guild.name} (id: ${interaction.guildId})`)
-                return interaction.reply(`${interaction.member.displayName}, you have already begun Totally Epic Quests!`)
+                return interaction.reply({content: `${interaction.member.displayName}, you have already begun Totally Epic Quests!`, ephemeral: true})
             }
 
             let newPlayer = new Player()
@@ -34,7 +34,7 @@ module.exports = {
             savePlayers(logger, interaction.guildId, players)
             
             logger.log(`Created new Player ${JSON.stringify(newPlayer)} (${interaction.user.id})`)
-            interaction.reply(`${interaction.member.displayName}, your Totally Epic Quests have begun!`)
+            interaction.reply({content: `${interaction.member.displayName}, your Totally Epic Quests have begun!`, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `view`) {
             logger.log(`Subcommand: view`)
@@ -44,9 +44,9 @@ module.exports = {
                     logger.log(`Could not find the requested profile`)
 
                     if(isSelf) {
-                        return interaction.reply(`You do not have a Totally Epic Quests profile, ${member.displayName}!`)
+                        return interaction.reply({content: `You do not have a Totally Epic Quests profile, ${member.displayName}!`, ephemeral: true})
                     } else {
-                        return interaction.reply(`${member.displayName} does not have a Totally Epic Quests profile!`)
+                        return interaction.reply({content: `${member.displayName} does not have a Totally Epic Quests profile!`, ephemeral: true})
                     }
                 }
                 
@@ -62,7 +62,7 @@ module.exports = {
                 output += `\nExperience: ${players[member.user.id].experience}/${players[member.user.id].expToNextLevel}`
                 output += `\nCurrent quest: ${players[member.user.id].currentQuest}`
 
-                interaction.reply(output)
+                interaction.reply({content: output, ephemeral: true})
             }
             
             if(!interaction.options.getMember(`member`)) {
