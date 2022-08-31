@@ -285,6 +285,13 @@ module.exports = {
 
             const config = loadConfig(logger, interaction.guildId)
 
+            for(const message in config.turnInMessages) {
+                if(config.turnInMessages[message].playerId === interaction.user.id) {
+                    logger.log(`${interaction.user.tag} has already turned in a quest`)
+                    return interaction.reply({content: `You've already turned in a quest for approval!`, ephemeral: true})
+                }
+            }
+
             logger.log(`Turning in quest ${players[interaction.user.id].currentQuest}`)
 
             interaction.guild.channels.fetch(config.modChannel)
