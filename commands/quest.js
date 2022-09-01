@@ -192,13 +192,17 @@ module.exports = {
                 newPrerequisite = prerequisiteName
             }
 
+            const newCompletedBy = quests[name].completedBy
+
             if(newName) {
                 quests[newName] = new Quest(newDescription, newReward, newPrerequisite)
+                quests[newName].completedBy = newCompletedBy
                 delete quests[name]
                 
                 logger.log(`The ${name} quest is now ${newName}: ${JSON.stringify(quests[newName])}`)
             } else {
                 quests[name] = new Quest(newDescription, newReward, newPrerequisite)
+                quests[name].completedBy = newCompletedBy
                 
                 logger.log(`The "${name}" quest is now: ${JSON.stringify(quests[name])}`)
             }

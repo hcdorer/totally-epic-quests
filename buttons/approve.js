@@ -37,7 +37,7 @@ module.exports = {
 
             players[turnInMessage.playerId].currentQuest = ""
             delete config.turnInMessages[interaction.message.id]
-            return interaction.update({content: `There is no quest named ${turnInMessage.questName}`, components: []})
+            return interaction.update({content: `There is no quest named ${turnInMessage.questName}!`, components: []})
         }
 
         let leveledUp = false
