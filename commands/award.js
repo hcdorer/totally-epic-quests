@@ -32,7 +32,7 @@ module.exports = {
 
         if(!players[user.id]) {
             logger.log(`${user.tag} does not have a profile`)
-            return interaction.reply(`That user does not have a Totally Epic Quests profile!`)
+            return interaction.reply({content: `That user does not have a Totally Epic Quests profile!`, ephemeral: true})
         }
 
         let leveledUp = false
