@@ -341,10 +341,11 @@ module.exports = {
             }
 
             logger.log(`Cancelling ${interaction.user.tag}'s current quest`)
+            const oldQuestName = players[interaction.user.id].currentQuest
             players[interaction.user.id].currentQuest = ""
             savePlayers(logger, interaction.guildId, players)
 
-            interaction.reply({content: `${players[interaction.user.id].currentQuest} quest cancelled!`})
+            interaction.reply({content: `${oldQuestName} quest cancelled!`, ephemeral: true})
         }
     }
 }
