@@ -26,10 +26,12 @@ module.exports = {
 
         saveConfig(logger, interaction.guildId, config)
 
-        interaction.update({content: `Turn-in request denied!`, components: []})
-
         interaction.guild.channels.fetch(config.messageChannel)
             .then(channel => interaction.client.users.fetch(turnInMessage.playerId)
-                .then(user => channel.send(`${user}, it seems that your ${turnInMessage.questName} quest isn't over yet.  Keep trying!`)))
+                .then(user => {
+                    interaction.guild.members.fetch(user)
+                        .then(member => interaction.update({content: `${member.displayName}'s ${turnInMessage.questName} turn-in request was denied by ${interaction.member.displayName}!`, components: []}))
+                    channel.send(`${user}, it seems that your ${turnInMessage.questName} quest isn't over yet.  Keep trying!`)
+                }))
     }
 }

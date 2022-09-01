@@ -60,11 +60,12 @@ module.exports = {
         saveQuests(logger, interaction.guildId, quests)
         saveConfig(logger, interaction.guildId, config)
 
-        interaction.update({content: `Turn-in request approved!`, components: []})
-
         interaction.guild.channels.fetch(config.messageChannel)
             .then(channel => interaction.client.users.fetch(turnInMessage.playerId)
                 .then(user => {
+                    interaction.guild.members.fetch(user)
+                        .then(member => interaction.update({content: `${member.displayName}'s ${turnInMessage.questName} turn-in request was approved by ${interaction.member.displayName}!`, components: []}))
+
                     channel.send(`Congratulations ${user}, you have completed the ${turnInMessage.questName} quest and recieved your rewards!`)
                     if(leveledUp) {
                         channel.send(`You've also leveled up to level ${players[turnInMessage.playerId].level}!`)
