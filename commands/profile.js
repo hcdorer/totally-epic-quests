@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require(`discord.js`)
+const { SlashCommandBuilder, EmbedBuilder } = require(`discord.js`)
 const { Player } = require(`../game/player.js`)
 const { loadPlayers, savePlayers } = require("../game/gameData.js")
 
@@ -52,17 +52,17 @@ module.exports = {
                 
                 logger.log(`Viewing Player ${JSON.stringify(players[member.user.id])} (${member.user.tag})`)
 
-                let output = ``
-                if(isSelf) {
-                    output = `Your Totally Epic Quests profile:`
-                } else {
-                    output = `${member.displayName}'s Totally Epic Quests profile:`
-                }
-                output += `\nLevel: ${players[member.user.id].level}`
-                output += `\nExperience: ${players[member.user.id].experience}/${players[member.user.id].expToNextLevel}`
-                output += `\nCurrent quest: ${players[member.user.id].currentQuest}`
+                let output = new EmbedBuilder()
+                    .setTitle(isSelf ? `Your Totally Epic Quests profile` : `${member.displayName}'s Totally Epic Quests profile`)
+                    .setColor(0x1cb2f5)
+                    .setThumbnail(member.displayAvatarURL())
+                    .addFields(
+                        {name: `Level`, value: `${players[member.user.id].level}`, inline: true},
+                        {name: `Experience`, value: `${players[member.user.id].experience}/${players[member.user.id].expToNextLevel}`, inline: true},
+                        {name: `Current Quest`, value: players[member.user.id].currentQuest ? `${players[member.user.id].currentQuest}` : `None`, inline: true}
+                    )
 
-                interaction.reply({content: output, ephemeral: true})
+                interaction.reply({embeds: [output], ephemeral: true})
             }
             
             if(!interaction.options.getMember(`member`)) {

@@ -33,7 +33,7 @@ function addRankRole(logger, player, playerId, config, guild) {
                                         logger.log(`Could not add the ${role.name} role to ${member.user.tag} due to a permissions issue`)
 
                                         let output = `Attempt to give you the ${role.name} role failed!  Check with server staff and ask if: `
-                                        output += `\na) Totally Epic Quests has the Manage Roles permission, or`
+                                        output += `\na) the Totally Epic Quests role has the Manage Roles permission, or`
                                         output += `\nb) the Totally Epic Quests role is above the ${role.name} role in the roles list.`
 
                                         guild.channels.fetch(config.messageChannel)
