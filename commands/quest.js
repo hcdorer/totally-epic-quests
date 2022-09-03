@@ -142,16 +142,24 @@ module.exports = {
         if(interaction.options.getSubcommand() === `list`) {
             logger.log(`Subcommand: list`)
 
-            let output = `The Totally Epic Quests in this server are:\n`
-
-            for(const name in quests) {
-                output += `\n${name}`
-                if(quests[name].completedBy.includes(interaction.user.id)) {
-                    output += ` ✅`
+            let buildQuestList = function() {
+                let valueOutput = ``
+                for(const name in quests) {
+                    valueOutput += `\n${name}`
+                    if(quests[name].completedBy.includes(interaction.user.id)) {
+                        valueOutput += ` ✅`
+                    }
                 }
-            }
 
-            interaction.reply({content: output, ephemeral: true})
+                return valueOutput
+            }
+            
+            const output = new EmbedBuilder()
+                .setTitle(`Quests in ${interaction.guild.name}`)
+                .setColor(0xbe2ed6)
+                .addFields({name: `Page 1 of 1`, value: buildQuestList()})
+
+            interaction.reply({embeds: [output], ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `edit`) {
             logger.log(`Subcommand: edit`)
@@ -223,7 +231,7 @@ module.exports = {
 
             logger.log(`Viewing quest "${name}"`)
 
-            let output = new EmbedBuilder()
+            const output = new EmbedBuilder()
                 .setTitle(quests[name].completedBy.includes(interaction.user.id) ? `${name} ✅` : name)
                 .setColor(0xbe2ed6)
                 .setDescription(quests[name].description)

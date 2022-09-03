@@ -52,7 +52,7 @@ module.exports = {
                 
                 logger.log(`Viewing Player ${JSON.stringify(players[member.user.id])} (${member.user.tag})`)
 
-                let output = new EmbedBuilder()
+                const output = new EmbedBuilder()
                     .setTitle(isSelf ? `Your Totally Epic Quests profile` : `${member.displayName}'s Totally Epic Quests profile`)
                     .setColor(0x1cb2f5)
                     .setThumbnail(member.displayAvatarURL())
