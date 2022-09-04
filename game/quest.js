@@ -20,4 +20,16 @@ class Quest {
     }
 }
 
-module.exports = Quest
+/**
+ * @param {Object} quests 
+ * @returns {Object}
+ */
+function convertQuests(quests) {
+    let newQuests = {}
+    for(const name in quests) {
+        newQuests = new Quest(quests[name].description, quests[name].reward, quests[name].prerequisite)
+        Object.assign(newQuests[name], quests[name])
+    }
+}
+
+module.exports = { Quest, convertQuests }

@@ -15,9 +15,9 @@ class Player {
  */
  function convertPlayers(players) {
     let newPlayers = {}
-    for(const name in players) {
-        newPlayers[name] = new Player()
-        Object.assign(newPlayers[name], players[name])
+    for(const id in players) {
+        newPlayers[id] = new Player()
+        Object.assign(newPlayers[id], players[id])
     }
 
     return newPlayers
