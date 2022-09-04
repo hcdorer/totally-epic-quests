@@ -10,11 +10,11 @@ function saveData(data, filename) {
 }
 
 /**
- * @param {Logger} logger
  * @param {string} guildId
  * @param {object} players
+ * @param {Logger} logger
  */
-function savePlayers(logger, guildId, players) {
+function savePlayers(guildId, players, logger = null) {
     let filename = `${guildId}_players.json`
     
     try {
@@ -24,15 +24,17 @@ function savePlayers(logger, guildId, players) {
         throw err
     }
 
-    logger.log(`Saved ${filename}`)
+    if(logger) {
+        logger.log(`Saved ${filename}`)
+    }
 }
 
 /**
- * @param {Logger} logger
  * @param {string} guildId 
  * @param {object} quests
+ * @param {Logger} logger
  */
-function saveQuests(logger, guildId, quests) {
+function saveQuests(guildId, quests, logger = null) {
     let filename = `${guildId}_quests.json`
     
     try {
@@ -42,15 +44,17 @@ function saveQuests(logger, guildId, quests) {
         throw err
     }
 
-    logger.log(`Saved ${filename}`)
+    if(logger) {
+        logger.log(`Saved ${filename}`)
+    }
 }
 
 /**
- * @param {Logger} logger
  * @param {string} guildId
  * @param {object} config
+ * @param {Logger} logger
  */
-function saveConfig(logger, guildId, config) {
+function saveConfig(guildId, config, logger = null) {
     let filename = `${guildId}_config.json`
 
     try {
@@ -60,15 +64,17 @@ function saveConfig(logger, guildId, config) {
         throw err
     }
 
-    logger.log(`Saved ${filename}`)
+    if(logger) {
+        logger.log(`Saved ${filename}`)
+    }
 }
 
 /**
+ * @param {string} guildId
  * @param {Logger} logger
- * @param {string} guildId 
  * @returns {object | undefined}
  */
-function loadPlayers(logger, guildId) {
+function loadPlayers(guildId, logger = null) {
     let filename = `${guildId}_players.json`
     let players
 
@@ -79,16 +85,19 @@ function loadPlayers(logger, guildId) {
         return
     }
     
-    logger.log(`Loaded ${filename}`)
+    if(logger) {
+        logger.log(`Loaded ${filename}`)
+    }
+
     return players
 }
 
 /**
+ * @param {string} guildId
  * @param {Logger} logger
- * @param {string} guildId 
  * @returns {object | undefined}
  */
-function loadQuests(logger, guildId) {
+function loadQuests(guildId, logger = null) {
     let filename = `${guildId}_quests.json`
     let quests
 
@@ -99,16 +108,19 @@ function loadQuests(logger, guildId) {
         return
     }
     
-    logger.log(`Loaded ${filename}`)
+    if(logger) {
+        logger.log(`Loaded ${filename}`)
+    }
+
     return quests
 }
 
 /**
- * @param {Logger} logger
- * @param {string} guildId 
+ * @param {string} guildId
+ * @param {Logger} logger 
  * @returns {GuildConfig | undefined}
  */
-function loadConfig(logger, guildId) {
+function loadConfig(guildId, logger = null) {
     let filename = `${guildId}_config.json`
     let config
 
@@ -119,7 +131,10 @@ function loadConfig(logger, guildId) {
         return
     }
 
-    logger.log(`Loaded ${filename}`)
+    if(logger) {
+        logger.log(`Loaded ${filename}`)
+    }
+
     return config
 }
 

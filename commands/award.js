@@ -27,8 +27,8 @@ module.exports = {
         const amount = interaction.options.getNumber(`amount`)
         const reason = interaction.options.getString(`reason`)
 
-        const players = loadPlayers(logger, interaction.guildId)
-        const config = loadConfig(logger, interaction.guildId)
+        const players = loadPlayers(interaction.guildId, logger)
+        const config = loadConfig(interaction.guildId, logger)
 
         if(!players[user.id]) {
             logger.log(`${user.tag} does not have a profile`)
@@ -47,7 +47,7 @@ module.exports = {
 
         addRankRole(logger, players[user.id], user.id, config, interaction.guild)
 
-        savePlayers(logger, interaction.guildId, players)
+        savePlayers(interaction.guildId, players, logger)
 
         interaction.reply({content: `Experience awarded!`, ephemeral: true})
 

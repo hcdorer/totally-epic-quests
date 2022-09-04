@@ -78,7 +78,7 @@ module.exports = {
         logger.newline()
         logger.log(`${interaction.user.tag} used /quest`)
 
-        const quests = loadQuests(logger, interaction.guildId)
+        const quests = loadQuests(interaction.guildId, logger)
 
         if(interaction.options.getSubcommand() === `create`) {
             logger.log(`Subcommand: create`)
@@ -113,7 +113,7 @@ module.exports = {
             quests[name] = new Quest(description, reward, prerequisite)
             logger.log(`Added new quest "${name}": ${JSON.stringify(quests[name])}`)
 
-            saveQuests(logger, interaction.guildId, quests)
+            saveQuests(interaction.guildId, quests, logger)
 
             interaction.reply({content: `${name} quest created!`, ephemeral: true})
         }
@@ -133,7 +133,7 @@ module.exports = {
             }
 
             delete quests[name]
-            saveQuests(logger, interaction.guildId, quests)
+            saveQuests(interaction.guildId, quests, logger)
 
             logger.log(`Deleted the "${name}" quest`)
 
@@ -207,7 +207,7 @@ module.exports = {
                 logger.log(`The "${name}" quest is now: ${JSON.stringify(quests[name])}`)
             }
 
-            saveQuests(logger, interaction.guildId, quests)
+            saveQuests(interaction.guildId, quests, logger)
 
             interaction.reply({content: `${name} quest edited!`, ephemeral: true})
         }
@@ -237,7 +237,7 @@ module.exports = {
             logger.log(`Subcommand: accept`)
 
             const name = interaction.options.getString(`name`)
-            const players = loadPlayers(logger, interaction.guildId)
+            const players = loadPlayers(interaction.guildId, logger)
 
             if(!quests[name]) {
                 logger.log(`No quest named ${name} exists`)
@@ -267,7 +267,7 @@ module.exports = {
             }
 
             players[interaction.user.id].currentQuest = name
-            savePlayers(logger, interaction.guildId, players)
+            savePlayers(interaction.guildId, players, logger)
             
             logger.log(`${interaction.user.tag} has accepted quest "${name}"`)
             interaction.reply({content: `${name} quest accepted!`, ephemeral: true})
@@ -275,7 +275,7 @@ module.exports = {
         if(interaction.options.getSubcommand() === `turn-in`) {
             logger.log(`Subcommand: turn-in`)
             
-            const players = loadPlayers(logger, interaction.guildId)
+            const players = loadPlayers(interaction.guildId, logger)
 
             if(!players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} does not have a profile`)
@@ -287,7 +287,7 @@ module.exports = {
                 return interaction.reply({content: `You don't have a quest to turn in!`, ephemeral: true})
             }
 
-            const config = loadConfig(logger, interaction.guildId)
+            const config = loadConfig(interaction.guildId, logger)
 
             for(const message in config.turnInMessages) {
                 if(config.turnInMessages[message].playerId === interaction.user.id) {
@@ -319,7 +319,7 @@ module.exports = {
                             logger.log(`Registering the approval request message in the config file`)
 
                             config.turnInMessages[message.id] = new TurnInMessage(interaction.user.id, players[interaction.user.id].currentQuest)
-                            saveConfig(logger, interaction.guildId, config)
+                            saveConfig(interaction.guildId, config, logger)
                         })
                 })
 
@@ -328,7 +328,7 @@ module.exports = {
         if(interaction.options.getSubcommand() === `cancel`) {
             logger.log(`Subcommand: cancel`)
 
-            const players = loadPlayers(logger, interaction.guildId)
+            const players = loadPlayers(interaction.guildId, logger)
 
             if(!players[interaction.user.id]) {
                 logger.log(`${interaction.user.tag} does not have a profile`)
@@ -343,7 +343,7 @@ module.exports = {
             logger.log(`Cancelling ${interaction.user.tag}'s current quest`)
             const oldQuestName = players[interaction.user.id].currentQuest
             players[interaction.user.id].currentQuest = ""
-            savePlayers(logger, interaction.guildId, players)
+            savePlayers(interaction.guildId, players, logger)
 
             interaction.reply({content: `${oldQuestName} quest cancelled!`, ephemeral: true})
         }

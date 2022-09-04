@@ -49,7 +49,7 @@ module.exports = {
         logger.newline()
         logger.log(`${interaction.user.tag} used /config`)
 
-        let config = loadConfig(logger, interaction.guildId)
+        let config = loadConfig(interaction.guildId, logger)
 
         if(interaction.options.getSubcommandGroup() === `rank-role`) {
             logger.log(`Subcommand group: rank-role`)
@@ -63,7 +63,7 @@ module.exports = {
                 const rankRole = new RankRole(role.id, attainedAtLevel)
 
                 config.rankRoles.push(rankRole)
-                saveConfig(logger, interaction.guildId, config)
+                saveConfig(interaction.guildId, config, logger)
                 
                 logger.log(`Added RankRole ${JSON.stringify(rankRole)} to the RankRole list`)
                 interaction.reply({content: `Added the ${role.name} role as a rank role!`, ephemeral: true})
@@ -81,7 +81,7 @@ module.exports = {
                 
                 const index = config.rankRoles.indexOf(rankRole)
                 config.rankRoles.splice(index, 1)
-                saveConfig(logger, interaction.guildId, config)
+                saveConfig(interaction.guildId, config, logger)
 
                 logger.log(`Removed RankRole ${JSON.stringify(rankRole)} from the RankRole list`)
                 interaction.reply({content: `Removed the ${role.name} role from the list of rank roles!`, ephemeral: true})
@@ -122,7 +122,7 @@ module.exports = {
             let channel = interaction.options.getChannel(`channel`)
             
             config.messageChannel = channel.id
-            saveConfig(logger, interaction.guildId, config)
+            saveConfig(interaction.guildId, config, logger)
 
             logger.log(`Message channel set to #${channel.name} (id: ${channel.id})`)
             interaction.reply({content: `Set message channel to #${channel.name}!`, ephemeral: true})
@@ -133,7 +133,7 @@ module.exports = {
             let channel = interaction.options.getChannel(`channel`)
             
             config.modChannel = channel.id
-            saveConfig(logger, interaction.guildId, config)
+            saveConfig(interaction.guildId, config, logger)
 
             logger.log(`Mod channel set to #${channel.name} (id: ${channel.id})`)
             interaction.reply({content: `Set mod channel to #${channel.name}!`, ephemeral: true})

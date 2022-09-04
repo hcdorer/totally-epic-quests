@@ -12,9 +12,9 @@ module.exports = {
         logger.log(`${interaction.user.tag} used /init`)
         
         try {
-            savePlayers(logger, interaction.guildId, {})
-            saveQuests(logger, interaction.guildId, {})
-            saveConfig(logger, interaction.guildId, new GuildConfig())
+            savePlayers(interaction.guildId, {}, logger)
+            saveQuests(interaction.guildId, {}, logger)
+            saveConfig(interaction.guildId, new GuildConfig(), logger)
         } catch(err) {
             console.error(err)
             return interaction.reply(`Failed to initialize Totally Epic Quests!`)
