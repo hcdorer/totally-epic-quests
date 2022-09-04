@@ -9,4 +9,9 @@ class GuildConfig {
     turnInMessages = {}
 }
 
-module.exports = GuildConfig
+function convertConfig(config) {
+    let newConfig = new GuildConfig()
+    Object.assign(newConfig, config)
+}
+
+module.exports = { GuildConfig, convertConfig }
