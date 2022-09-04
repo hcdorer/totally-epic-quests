@@ -1,23 +1,12 @@
 class Player {
-    set level(level) {
-        this.level = level
-    }
-    set experience(experience) {
-        this.experience = experience
-    }
-    set expToNextLevel(expToNextLevel) {
-        this.expToNextLevel = expToNextLevel
-    }
-    set currentQuest(currentQuest) {
-        this.currentQuest = currentQuest
-    }
-
-    constructor() {
-        this.level = 1
-        this.experience = 0
-        this.expToNextLevel = 0
-        this.currentQuest = ""
-    }
+    /** @type {number} */
+    level = 1
+    /** @type {number} */
+    experience = 0
+    /** @type {number} */
+    expToNextLevel = 100
+    /** @type {string} */
+    currentQuest = ""
 }
 
 /**

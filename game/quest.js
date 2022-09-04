@@ -1,16 +1,12 @@
 class Quest {
-    set description(description) {
-        this.description = description
-    }
-    set reward(reward) {
-        this.reward = reward
-    }
-    set prerequisite(prerequisite) {
-        this.prerequisite = prerequisite
-    }
-    set completedBy(completedBy) {
-        this.completedBy = completedBy
-    }
+    /** @type {string} */
+    description
+    /** @type {number} */
+    reward
+    /** @type {string} */
+    prerequisite
+    /** @type {string[]} */
+    completedBy = []
 
     /**
      * @param {string} description 
@@ -21,7 +17,6 @@ class Quest {
         this.description = description
         this.reward = reward
         this.prerequisite = prerequisite
-        this.completedBy = []
     }
 }
 
