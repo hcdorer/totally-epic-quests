@@ -1,3 +1,5 @@
+const convertObject = require("../utils/util-functions")
+
 class GuildConfig {
     /** @type {RankRole[]} */
     rankRoles = []
@@ -9,9 +11,15 @@ class GuildConfig {
     turnInMessages = {}
 }
 
+/**
+ * @param {Object} config 
+ * @returns {GuildConfig}
+ */
 function convertConfig(config) {
     let newConfig = new GuildConfig()
-    Object.assign(newConfig, config)
+    convertObject(config, newConfig)
+
+    return newConfig
 }
 
 module.exports = { GuildConfig, convertConfig }

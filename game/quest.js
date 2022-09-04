@@ -1,3 +1,5 @@
+const convertObject = require("../utils/util-functions")
+
 class Quest {
     /** @type {string} */
     description
@@ -27,9 +29,11 @@ class Quest {
 function convertQuests(quests) {
     let newQuests = {}
     for(const name in quests) {
-        newQuests = new Quest(quests[name].description, quests[name].reward, quests[name].prerequisite)
-        Object.assign(newQuests[name], quests[name])
+        newQuests[name] = new Quest(quests[name].description, quests[name].reward, quests[name].prerequisite)
+        convertObject(quests, newQuests)
     }
+
+    return newQuests
 }
 
 module.exports = { Quest, convertQuests }

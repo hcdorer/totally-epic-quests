@@ -20,7 +20,10 @@ function savePlayers(guildId, players, logger = null) {
     try {
         saveData(players, filename)
     } catch(err) {
-        logger.log(`Error saving ${filename}`)
+        if(logger) {
+            logger.log(`Error saving ${filename}`)
+        }
+
         throw err
     }
 
@@ -40,7 +43,10 @@ function saveQuests(guildId, quests, logger = null) {
     try {
         saveData(quests, filename)
     } catch(err) {
-        logger.log(`Error saving ${filename}`)
+        if(logger) {
+            logger.log(`Error saving ${filename}`)
+        }
+
         throw err
     }
 
@@ -60,7 +66,10 @@ function saveConfig(guildId, config, logger = null) {
     try {
         saveData(config, filename)
     } catch(err) {
-        logger.log(`Error saving ${filename}`)
+        if(logger) {
+            logger.log(`Error saving ${filename}`)
+        }
+
         throw err
     }
 
@@ -81,7 +90,9 @@ function loadPlayers(guildId, logger = null) {
     try {
         players = require(path.join(__dirname, `..`, `saves`, filename))
     } catch(err) {
-        logger.log(`Error loading ${filename}`)
+        if(logger) {
+            logger.log(`Error loading ${filename}`)
+        }
         return
     }
     
@@ -104,7 +115,10 @@ function loadQuests(guildId, logger = null) {
     try {
         quests = require(path.join(__dirname, `..`, `saves`, filename))
     } catch(err) {
-        logger.log(`Error loading ${filename}`)
+        if(logger) {
+            logger.log(`Error loading ${filename}`)
+        }
+
         return
     }
     
@@ -127,7 +141,10 @@ function loadConfig(guildId, logger = null) {
     try {
         config = require(path.join(__dirname, `..`, `saves`, filename))
     } catch(err) {
-        logger.log(`Error loading ${filename}`)
+        if(logger) {
+            logger.log(`Error loading ${filename}`)
+        }
+
         return
     }
 

@@ -1,3 +1,5 @@
+const convertObject = require("../utils/util-functions")
+
 class Player {
     /** @type {number} */
     level = 1
@@ -17,7 +19,7 @@ class Player {
     let newPlayers = {}
     for(const id in players) {
         newPlayers[id] = new Player()
-        Object.assign(newPlayers[id], players[id])
+        convertObject(players, newPlayers)
     }
 
     return newPlayers
