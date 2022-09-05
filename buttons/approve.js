@@ -14,7 +14,7 @@ module.exports = {
             return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true})
         }
         
-        const config = loadConfig(logger, interaction.guildId)
+        const config = loadConfig(interaction.guildId, logger)
         const turnInMessage = config.turnInMessages[interaction.message.id]
 
         if(!turnInMessage) {
@@ -22,7 +22,7 @@ module.exports = {
             return interaction.update({content: `This message did not have any associated turn-in request data!  How strange...`, components: []})
         }
 
-        const players = loadPlayers(logger, interaction.guildId)
+        const players = loadPlayers(interaction.guildId, logger)
         if(!players[turnInMessage.playerId]) {
             logger.log(`There is no player with id ${turnInMessage.playerId}`)
             logger.newline
@@ -31,7 +31,7 @@ module.exports = {
             return interaction.update({content: `The player with that ID does not have a Totally Epic Quests profile!`, components: []})
         }
 
-        const quests = loadQuests(logger, interaction.guildId)
+        const quests = loadQuests(interaction.guildId, logger)
         if(!quests[turnInMessage.questName]) {
             logger.log(`There is no quest named ${turnInMessage.questName}`)
 
@@ -56,9 +56,9 @@ module.exports = {
 
         addRankRole(logger, players[turnInMessage.playerId], turnInMessage.playerId, config, interaction.guild)
 
-        savePlayers(logger, interaction.guildId, players)
-        saveQuests(logger, interaction.guildId, quests)
-        saveConfig(logger, interaction.guildId, config)
+        savePlayers(interaction.guildId, players, logger)
+        saveQuests(interaction.guildId, quests, logger)
+        saveConfig(interaction.guildId, config, logger)
 
         interaction.guild.channels.fetch(config.messageChannel)
             .then(channel => interaction.client.users.fetch(turnInMessage.playerId)

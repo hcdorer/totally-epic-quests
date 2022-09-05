@@ -1,3 +1,5 @@
+const convertObject = require("../utils/util-functions")
+
 class Quest {
     /** @type {string} */
     description
@@ -20,4 +22,18 @@ class Quest {
     }
 }
 
-module.exports = Quest
+/**
+ * @param {Object} quests 
+ * @returns {Object}
+ */
+function convertQuests(quests) {
+    let newQuests = {}
+    for(const name in quests) {
+        newQuests[name] = new Quest(quests[name].description, quests[name].reward, quests[name].prerequisite)
+        convertObject(quests, newQuests)
+    }
+
+    return newQuests
+}
+
+module.exports = { Quest, convertQuests }

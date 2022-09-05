@@ -19,7 +19,7 @@ module.exports = {
         logger.newline()
         logger.log(`${interaction.user.tag} used /profile`)
 
-        let players = loadPlayers(logger, interaction.guildId)
+        let players = loadPlayers(interaction.guildId, logger)
 
         if(interaction.options.getSubcommand() === `create`) {
             logger.log(`Subcommand: create`)
@@ -31,7 +31,7 @@ module.exports = {
 
             let newPlayer = new Player()
             players[interaction.user.id] = newPlayer
-            savePlayers(logger, interaction.guildId, players)
+            savePlayers(interaction.guildId, players, logger)
             
             logger.log(`Created new Player ${JSON.stringify(newPlayer)} (${interaction.user.id})`)
             interaction.reply({content: `${interaction.member.displayName}, your Totally Epic Quests have begun!`, ephemeral: true})
