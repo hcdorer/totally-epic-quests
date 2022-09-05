@@ -150,8 +150,12 @@ module.exports = {
                         valueOutput += ` ✅`
                     }
                 }
-
-                return valueOutput
+                
+                if(valueOutput) {
+                    return valueOutput
+                } else {
+                    return `This server has no quests!`
+                }
             }
             
             const output = new EmbedBuilder()
