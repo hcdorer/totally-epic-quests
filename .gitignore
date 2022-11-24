@@ -3,6 +3,7 @@ node_modules/
 logs/
 saves/
 .vscode/
+.vs/
 
 #Files
 config.json
