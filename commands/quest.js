@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require(`discord.js`)
+const { SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require(`discord.js`)
 const { loadQuests, saveQuests, loadPlayers, savePlayers, loadConfig, saveConfig } = require(`../game/gameData.js`)
 const Quest = require(`../game/quest.js`)
 const TurnInMessage = require("../game/turnInMessage.js")
@@ -142,16 +142,28 @@ module.exports = {
         if(interaction.options.getSubcommand() === `list`) {
             logger.log(`Subcommand: list`)
 
-            let output = `The Totally Epic Quests in this server are:\n`
-
-            for(const name in quests) {
-                output += `\n${name}`
-                if(quests[name].completedBy.includes(interaction.user.id)) {
-                    output += ` ✅`
+            let buildQuestList = function() {
+                let valueOutput = ``
+                for(const name in quests) {
+                    valueOutput += `\n${name}`
+                    if(quests[name].completedBy.includes(interaction.user.id)) {
+                        valueOutput += ` ✅`
+                    }
+                }
+                
+                if(valueOutput) {
+                    return valueOutput
+                } else {
+                    return `This server has no quests!`
                 }
             }
+            
+            const output = new EmbedBuilder()
+                .setTitle(`Quests in ${interaction.guild.name}`)
+                .setColor(0xbe2ed6)
+                .addFields({name: `Page 1 of 1`, value: buildQuestList()})
 
-            interaction.reply({content: output, ephemeral: true})
+            interaction.reply({embeds: [output], ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `edit`) {
             logger.log(`Subcommand: edit`)
@@ -223,15 +235,16 @@ module.exports = {
 
             logger.log(`Viewing quest "${name}"`)
 
-            let output = `__${name}__`
-            output += `\n${quests[name].description}`
-            output += `\nReward for completion: ${quests[name].reward}`
+            const output = new EmbedBuilder()
+                .setTitle(quests[name].completedBy.includes(interaction.user.id) ? `${name} ✅` : name)
+                .setColor(0xbe2ed6)
+                .setDescription(quests[name].description)
+                .addFields(
+                    {name: `Reward`, value: quests[name].reward.toString()},
+                    {name: `Prerequisite`, value: quests[name].prerequisite ? quests[name].prerequisite : `None`}
+                )
 
-            if(quests[name].prerequisite) {
-                output += `\nPrerequisite quest: ${quests[name].prerequisite}`
-            }
-
-            interaction.reply({content: output, ephemeral: true})
+            interaction.reply({embeds: [output], ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `accept`) {
             logger.log(`Subcommand: accept`)

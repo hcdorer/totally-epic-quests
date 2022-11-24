@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require(`discord.js`)
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require(`discord.js`)
 const { loadConfig, saveConfig } = require(`../game/gameData.js`)
 const { RankRole } = require(`../game/rankRole.js`)
 
@@ -44,7 +44,10 @@ module.exports = {
             .addChannelOption(option => option
                 .setName(`channel`)
                 .setDescription(`The channel to send messages for moderators to`)
-                .setRequired(true))),
+                .setRequired(true)))
+        .addSubcommand(subcommand => subcommand
+            .setName(`view`)
+            .setDescription(`Show the config settings for this server.`)),
     async execute(logger, interaction) {
         logger.newline()
         logger.log(`${interaction.user.tag} used /config`)
@@ -125,7 +128,7 @@ module.exports = {
             saveConfig(interaction.guildId, config, logger)
 
             logger.log(`Message channel set to #${channel.name} (id: ${channel.id})`)
-            interaction.reply({content: `Set message channel to #${channel.name}!`, ephemeral: true})
+            interaction.reply({content: `Set message channel to <#${channel.id}>!`, ephemeral: true})
         }
         if(interaction.options.getSubcommand() === `set-mod-channel`) {
             logger.log(`Subcommand: set-mod-channel`)
@@ -136,7 +139,21 @@ module.exports = {
             saveConfig(interaction.guildId, config, logger)
 
             logger.log(`Mod channel set to #${channel.name} (id: ${channel.id})`)
-            interaction.reply({content: `Set mod channel to #${channel.name}!`, ephemeral: true})
+            interaction.reply({content: `Set mod channel to <#${channel.id}>!`, ephemeral: true})
+        }
+        if(interaction.options.getSubcommand() === `view`) {
+            logger.log(`Subcommand: view`)
+            
+            const output = new EmbedBuilder()
+                .setTitle(`${interaction.guild.name} Config`)
+                .setColor(0x39e75f)
+                .addFields(
+                    {name: `Message Channel`, value: config.messageChannel ? `<#${config.messageChannel}>` : `None`},
+                    {name: `Mod Channel`, value: config.modChannel ? `<#${config.modChannel}>` : `None`}
+                )
+            
+            logger.log(`Displaying this server's config`)
+            interaction.reply({embeds: [output], ephemeral: true})
         }
     }
 }
