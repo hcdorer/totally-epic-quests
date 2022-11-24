@@ -3,7 +3,11 @@ const { convertConfig } = require("./game/guildConfig")
 const { convertPlayers } = require("./game/player")
 const { convertQuests } = require("./game/quest")
 
-const guildId = `1004492821253869608`
+const guildId = process.argv.slice(2)[0]
+if(!guildId) {
+    console.log("No guild ID provided!")
+    process.exit(1)
+}
 
 const oldConfig = loadConfig(guildId)
 const oldPlayers = loadPlayers(guildId)
