@@ -3,6 +3,38 @@ const { loadQuests, saveQuests, loadPlayers, savePlayers, loadConfig, saveConfig
 const { Quest } = require(`../game/quest.js`)
 const TurnInMessage = require("../game/turnInMessage.js")
 
+function acceptQuest() {
+
+}
+
+function cancelQuest() {
+    
+}
+
+function createQuest() {
+
+}
+
+function deleteQuest() {
+
+}
+
+function editQuest() {
+
+}
+
+function listQuests() {
+
+}
+
+function turnInQuest() {
+
+}
+
+function viewQuest() {
+
+}
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName(`quest`)
