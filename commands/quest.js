@@ -341,13 +341,13 @@ module.exports = {
         if(interaction.options.getSubcommand() === `create`) {
             logger.log(`Subcommand: create`)
 
-            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, createQuest(logger, interaction, quests))
+            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => createQuest(logger, interaction, quests))
             return
         }
         if(interaction.options.getSubcommand() === `delete`) {
             logger.log(`Subcommand: delete`)
 
-            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, deleteQuest(logger, interaction, quests))
+            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => deleteQuest(logger, interaction, quests))
         }
         if(interaction.options.getSubcommand() === `list`) {
             logger.log(`Subcommand: list`)
@@ -357,7 +357,7 @@ module.exports = {
         if(interaction.options.getSubcommand() === `edit`) {
             logger.log(`Subcommand: edit`)
 
-            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, editQuest(logger, interaction, quests))
+            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => editQuest(logger, interaction, quests))
         }
         if(interaction.options.getSubcommand() === `view`) {
             logger.log(`Subcommand: view`)
