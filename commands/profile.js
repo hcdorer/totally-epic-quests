@@ -61,8 +61,7 @@ module.exports = {
                     .addFields(
                         {name: `Level`, value: players[member.user.id].level.toString(), inline: true},
                         {name: `Experience`, value: `${players[member.user.id].experience}/${players[member.user.id].expToNextLevel}`, inline: true},
-                        {name: `Current Quest`, value: players[member.user.id].currentQuest ? players[member.user.id].currentQuest : `None`, inline: true}
-                    );
+                    )
 
                 interaction.reply({embeds: [output], ephemeral: true});
             }

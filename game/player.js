@@ -7,8 +7,6 @@ class Player {
     experience = 0
     /** @type {number} */
     expToNextLevel = 100
-    /** @type {string} */
-    currentQuest = ""
 }
 
 /**

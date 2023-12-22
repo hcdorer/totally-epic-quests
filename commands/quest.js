@@ -1,67 +1,8 @@
 const { SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder } = require(`discord.js`);
-const { loadQuests, saveQuests, loadPlayers, savePlayers, loadConfig, saveConfig } = require(`../game/gameData.js`);
+const { loadQuests, saveQuests, loadPlayers, loadConfig, saveConfig } = require(`../game/gameData.js`);
 const { Quest } = require(`../game/quest.js`);
 const TurnInMessage = require("../game/turnInMessage.js");
 const { permissionCheck } = require("../utils/util-functions.js");
-
-function acceptQuest(logger, interaction, quests) {
-    const name = interaction.options.getString(`name`);
-    const players = loadPlayers(interaction.guildId, logger);
-
-    if(!quests[name]) {
-        logger.log(`No quest named ${name} exists`);
-        return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true});
-    }
-
-    if(!players[interaction.user.id]) {
-        logger.log(`${interaction.user.tag} does not have a profile`);
-        return interaction.reply({content: `You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`, ephemeral: true});
-    }
-
-    if(quests[name].completedBy.includes(interaction.user.id)) {
-        logger.log(`${interaction.user.tag} has already completed quest "${name}"`);
-        return interaction.reply({content: `You have already completed ${name}!`, ephemeral: true});
-    }
-
-    if(quests[quests[name].prerequisite]) {
-        if(!quests[quests[name].prerequisite].completedBy.includes(interaction.user.id)) {
-            logger.log(`${interaction.user.tag} has not completed the prerequisite quest ${quests[name].prerequisite}`);
-            return interaction.reply({content: `You must complete ${quests[name].prerequisite} before accepting this quest!`, ephemeral: true});
-        }
-    }
-
-    if(players[interaction.user.id].currentQuest) {
-        logger.log(`${interaction.user.tag} has already accepted a quest`);
-        return interaction.reply({content: `You have already accepted a quest!`, ephemeral: true});
-    }
-
-    players[interaction.user.id].currentQuest = name;
-    savePlayers(interaction.guildId, players, logger);
-    
-    logger.log(`${interaction.user.tag} has accepted quest "${name}"`);
-    interaction.reply({content: `${name} quest accepted!`, ephemeral: true});
-}
-
-function cancelQuest(logger, interaction) {
-    const players = loadPlayers(interaction.guildId, logger);
-
-            if(!players[interaction.user.id]) {
-                logger.log(`${interaction.user.tag} does not have a profile`);
-                return interaction.reply({content: `You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`, ephemeral: true});
-            }
-            
-            if(!players[interaction.user.id].currentQuest) {
-                logger.log(`${interaction.user.tag} does not have a current quest`);
-                return interaction.reply({content: `You don't have a quest to cancel!`, ephemeral: true});
-            }
-
-            logger.log(`Cancelling ${interaction.user.tag}'s current quest`);
-            const oldQuestName = players[interaction.user.id].currentQuest;
-            players[interaction.user.id].currentQuest = "";
-            savePlayers(interaction.guildId, players, logger);
-
-            interaction.reply({content: `${oldQuestName} quest cancelled!`, ephemeral: true});
-}
 
 function createQuest(logger, interaction, quests) {
     const name = interaction.options.getString(`name`);
@@ -187,29 +128,35 @@ function listQuests(interaction, quests) {
     interaction.reply({embeds: [output], ephemeral: true});
 }
 
-function turnInQuest(logger, interaction) {
+function turnInQuest(logger, interaction, quests) {
+    const name = interaction.options.getString(`name`);
     const players = loadPlayers(interaction.guildId, logger);
 
     if(!players[interaction.user.id]) {
         logger.log(`${interaction.user.tag} does not have a profile`);
         return interaction.reply({content: `You do not have a Totally Epic Quests profile, ${interaction.member.displayName}!`, ephemeral: true});
     }
+
+    logger.log(`Attempting to turn in the ${name} quest`);
     
-    if(!players[interaction.user.id].currentQuest) {
-        logger.log(`${interaction.user.tag} does not have a current quest`);
-        return interaction.reply({content: `You don't have a quest to turn in!`, ephemeral: true});
+    if(!quests[name]) {
+        logger.log(`No quest named ${name} exists`);
+        return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true});
     }
 
-    const config = loadConfig(interaction.guildId, logger);
+    if(quests[name].completedBy.includes(interaction.user.id)) {
+        logger.log(`${interaction.user.tag} has already completed quest "${name}"`);
+        return interaction.reply({content: `You have already completed ${name}!`, ephemeral: true});
+    }
 
-    for(const message in config.turnInMessages) {
-        if(config.turnInMessages[message].playerId === interaction.user.id) {
-            logger.log(`${interaction.user.tag} has already turned in a quest`);
-            return interaction.reply({content: `You've already turned in a quest for approval!`, ephemeral: true});
+    if(quests[quests[name].prerequisite]) {
+        if(!quests[quests[name].prerequisite].completedBy.includes(interaction.user.id)) {
+            logger.log(`${interaction.user.tag} has not completed the prerequisite quest ${quests[name].prerequisite}`);
+            return interaction.reply({content: `You must complete ${quests[name].prerequisite} before accepting this quest!`, ephemeral: true});
         }
     }
 
-    logger.log(`Turning in quest ${players[interaction.user.id].currentQuest}`);
+    const config = loadConfig(interaction.guildId, logger);
 
     interaction.guild.channels.fetch(config.modChannel)
         .then(channel => {
@@ -227,16 +174,16 @@ function turnInQuest(logger, interaction) {
                         .setStyle(ButtonStyle.Danger)
                 );
             
-            channel.send({content: `${interaction.member.displayName} wants to turn in the ${players[interaction.user.id].currentQuest} quest!`, components: [buttons]})
+            channel.send({content: `${interaction.member.displayName} wants to turn in the ${name} quest!`, components: [buttons]})
                 .then(message => {
                     logger.log(`Registering the approval request message in the config file`);
 
-                    config.turnInMessages[message.id] = new TurnInMessage(interaction.user.id, players[interaction.user.id].currentQuest);
+                    config.turnInMessages[message.id] = new TurnInMessage(interaction.user.id, name);
                     saveConfig(interaction.guildId, config, logger);
-                })
-        })
+                });
+        });
 
-    interaction.reply({content: `Turning in your ${players[interaction.user.id].currentQuest} quest!  A moderator must approve it before you can claim your reward.`, ephemeral: true});
+    interaction.reply({content: `Turning in your ${name} quest!  A moderator must approve it before you can claim your reward.`, ephemeral: true});
 }
 
 function viewQuest(logger, interaction, quests) {
@@ -320,18 +267,12 @@ module.exports = {
                 .setDescription(`The name of the quest to view`)
                 .setRequired(true)))
         .addSubcommand(subcommand => subcommand
-            .setName(`accept`)
-            .setDescription(`Accept a quest!`)
+            .setName(`turn-in`)
+            .setDescription(`Turn in your current quest and claim the reward (requires moderator approval).`)
             .addStringOption(option => option
                 .setName(`name`)
-                .setDescription(`The name of the quest you wish to accept`)
-                .setRequired(true)))
-        .addSubcommand(subcommand => subcommand
-            .setName(`turn-in`)
-            .setDescription(`Turn in your current quest and claim the reward (requires moderator approval).`))
-        .addSubcommand(subcommand => subcommand
-            .setName(`cancel`)
-            .setDescription(`Stop attempting your current quest.`)),
+                .setDescription(`The name of the quest to turn in.`)
+                .setRequired(true))),
     async execute(logger, interaction) {
         logger.newline();
         logger.log(`${interaction.user.tag} used /quest`);
@@ -368,23 +309,10 @@ module.exports = {
             viewQuest(logger, interaction, quests);
             return;
         }
-        if(interaction.options.getSubcommand() === `accept`) {
-            logger.log(`Subcommand: accept`);
-
-            acceptQuest(logger, interaction, quests);
-            return;
-        }
         if(interaction.options.getSubcommand() === `turn-in`) {
             logger.log(`Subcommand: turn-in`);
 
-            turnInQuest(logger, interaction);
-            return;
-        }
-        if(interaction.options.getSubcommand() === `cancel`) {
-            logger.log(`Subcommand: cancel`);
-
-            cancelQuest(logger, interaction);
-            return;
+            turnInQuest(logger, interaction, quests);
         }
     }
 }
