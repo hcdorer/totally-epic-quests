@@ -48,7 +48,7 @@ module.exports = {
                 leveledUp = true;
             }
             
-            if(!quests[turnInMessage.questName].recurring) {
+            if(!quests[turnInMessage.questName].completedBy.includes(turnInMessage.playerId)) {
                 quests[turnInMessage.questName].completedBy.push(turnInMessage.playerId);
             }
 

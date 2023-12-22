@@ -109,14 +109,15 @@ function editQuest(logger, interaction, quests) {
 }
 
 function listQuests(interaction, quests) {
-    let buildQuestList = function() {
+    let buildQuestList = () => {
         let valueOutput = ``;
         for(const name in quests) {
             valueOutput += `\n${name}`;
 
             if(quests[name].recurring) {
                 valueOutput += ` 🔁`;
-            } else if(quests[name].completedBy.includes(interaction.user.id)) {
+            }
+            if(quests[name].completedBy.includes(interaction.user.id)) {
                 valueOutput += ` ✅`;
             }
         }
@@ -162,7 +163,7 @@ function turnInQuest(logger, interaction, quests) {
     if(quests[quests[name].prerequisite]) {
         if(!quests[quests[name].prerequisite].completedBy.includes(interaction.user.id)) {
             logger.log(`${interaction.user.tag} has not completed the prerequisite quest ${quests[name].prerequisite}`);
-            return interaction.reply({content: `You must complete ${quests[name].prerequisite} before accepting this quest!`, ephemeral: true});
+            return interaction.reply({content: `You must complete ${quests[name].prerequisite} before turning in this quest!`, ephemeral: true});
         }
     }
 
@@ -206,7 +207,7 @@ function viewQuest(logger, interaction, quests) {
 
     logger.log(`Viewing quest "${name}"`);
 
-    const embedTitle = `${name} ${quests[name].recurring ? `🔁` : (quests[name].completedBy.includes(interaction.user.id) ? `✅` : ``)}`;
+    const embedTitle = `${name}${quests[name].recurring ? ` 🔁` : ``}${quests[name].completedBy.includes(interaction.user.id) ? ` ✅` : ``}`;
 
     const output = new EmbedBuilder()
         .setTitle(embedTitle)
@@ -244,7 +245,8 @@ module.exports = {
                 .setDescription(`Whether or not the quest is recurring.  Recurring quests can be completed any number of times.`))
             .addStringOption(option => option
                 .setName(`prerequisite`)
-                .setDescription(`The quest to be completed before accepting this quest`)))
+                .setDescription(`The quest to be completed before accepting this quest`)
+                .setAutocomplete(true)))
         .addSubcommand(subcommand => subcommand
             .setName(`delete`)
             .setDescription(`Delete an existing quest.`)
@@ -278,7 +280,8 @@ module.exports = {
                 .setDescription(`Whether or not the quest is recurring.  Recurring quests can be completed any number of times.`))
             .addStringOption(option => option
                 .setName(`prerequisite`)
-                .setDescription(`The quest to be completed before accepting this quest`)))
+                .setDescription(`The quest to be completed before accepting this quest`)
+                .setAutocomplete(true)))
         .addSubcommand(subcommand => subcommand
             .setName(`view`)
             .setDescription(`View more info on a specific quest`)
@@ -344,7 +347,7 @@ module.exports = {
         const quests = loadQuests(interaction.guildId, logger);
         let choices = [];
 
-        if(focusedOption.name === `name`) {
+        if(focusedOption.name === `name` || focusedOption.name === `prerequisite`) {
             choices = Object.keys(quests);
         }
 
