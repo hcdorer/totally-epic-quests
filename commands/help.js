@@ -37,7 +37,7 @@ module.exports = {
                                         .then(message => interaction.reply({content: `Check your DMs!`, ephemeral: true}))
                                         .catch(error => {
                                             console.error(error);
-                                            interaction.reply({content: `Couldn't send you a message!`, ephemeral: true});
+                                            interaction.reply({content: `Couldn't send you a DM!  Have you disabled DMs from this server?`, ephemeral: true});
                                         });
                                 });
                             }

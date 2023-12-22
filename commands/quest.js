@@ -251,7 +251,8 @@ module.exports = {
             .addStringOption(option => option
                 .setName(`name`)
                 .setDescription(`The name of the quest to delete`)
-                .setRequired(true)))
+                .setRequired(true)
+                .setAutocomplete(true)))
         .addSubcommand(subcommand => subcommand
             .setName(`list`)
             .setDescription(`View a list of all available quests.`))
@@ -261,7 +262,8 @@ module.exports = {
             .addStringOption(option => option
                 .setName(`name`)
                 .setDescription(`The name of the quest`)
-                .setRequired(true))
+                .setRequired(true)
+                .setAutocomplete(true))
             .addStringOption(option => option
                 .setName(`new-name`)
                 .setDescription(`The new name of the quest`))
@@ -283,14 +285,16 @@ module.exports = {
             .addStringOption(option => option
                 .setName(`name`)
                 .setDescription(`The name of the quest to view`)
-                .setRequired(true)))
+                .setRequired(true)
+                .setAutocomplete(true)))
         .addSubcommand(subcommand => subcommand
             .setName(`turn-in`)
             .setDescription(`Turn in your current quest and claim the reward (requires moderator approval).`)
             .addStringOption(option => option
                 .setName(`name`)
                 .setDescription(`The name of the quest to turn in.`)
-                .setRequired(true))),
+                .setRequired(true)
+                .setAutocomplete(true))),
     async execute(logger, interaction) {
         logger.newline();
         logger.log(`${interaction.user.tag} used /quest`);
@@ -332,5 +336,19 @@ module.exports = {
 
             turnInQuest(logger, interaction, quests);
         }
+    },
+    async autocomplete(logger, interaction) {
+        const focusedOption = interaction.options.getFocused(true);
+        logger.log(`Autocompleting the /quest ${interaction.options.getSubcommand()} ${focusedOption.name} option`);
+
+        const quests = loadQuests(interaction.guildId, logger);
+        let choices = [];
+
+        if(focusedOption.name === `name`) {
+            choices = Object.keys(quests);
+        }
+
+        const filteredChoices = choices.filter(choice => choice.startsWith(focusedOption.value));
+        await interaction.respond(filteredChoices.map(choice => ({name: choice, value: choice})));
     }
 }
