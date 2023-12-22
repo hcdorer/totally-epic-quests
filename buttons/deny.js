@@ -28,7 +28,7 @@ module.exports = {
                     .then(user => {
                         interaction.guild.members.fetch(user)
                             .then(member => interaction.update({content: `${member.displayName}'s ${turnInMessage.questName} turn-in request was denied by ${interaction.member.displayName}!`, components: []}));
-                        channel.send(`${user}, it seems that your ${turnInMessage.questName} quest isn't over yet.  Keep trying!`);
+                        channel.send(`${user}, it seems that you haven't completed ${turnInMessage.questName} yet.  Keep trying!`);
                     }));
         })
 

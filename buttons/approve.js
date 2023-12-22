@@ -48,7 +48,10 @@ module.exports = {
                 leveledUp = true;
             }
             
-            quests[turnInMessage.questName].completedBy.push(turnInMessage.playerId);
+            if(!quests[turnInMessage.questName].recurring) {
+                quests[turnInMessage.questName].completedBy.push(turnInMessage.playerId);
+            }
+
             delete config.turnInMessages[interaction.message.id];
     
             logger.log(`Successfully approved the turn-in request`);

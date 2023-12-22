@@ -5,6 +5,8 @@ class Quest {
     description;
     /** @type {number} */
     reward;
+    /** @type {boolean} */
+    recurring;
     /** @type {string} */
     prerequisite;
     /** @type {string[]} */
@@ -13,11 +15,13 @@ class Quest {
     /**
      * @param {string} description 
      * @param {number} reward
+     * @param {boolean} recurring
      * @param {string} prerequisite
      */
-    constructor(description, reward, prerequisite) {
+    constructor(description, reward, recurring, prerequisite) {
         this.description = description;
         this.reward = reward;
+        this.recurring = recurring;
         this.prerequisite = prerequisite;
     }
 }
@@ -29,7 +33,7 @@ class Quest {
 function convertQuests(quests) {
     let newQuests = {};
     for(const name in quests) {
-        newQuests[name] = new Quest(quests[name].description, quests[name].reward, quests[name].prerequisite);
+        newQuests[name] = new Quest(quests[name].description, quests[name].reward, quests[name].recurring, quests[name].prerequisite);
         convertObject(quests, newQuests);
     }
 

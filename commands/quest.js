@@ -8,17 +8,16 @@ function createQuest(logger, interaction, quests) {
     const name = interaction.options.getString(`name`);
     const description = interaction.options.getString(`description`);
     const reward = interaction.options.getNumber(`reward`);
+    const recurring = interaction.options.getBoolean(`recurring`);
     const prerequisiteName = interaction.options.getString(`prerequisite`);
     
+    let prerequisite = "";
     if(prerequisiteName) {
         if(!quests[prerequisiteName]) {
             logger.log(`The quest "${prerequisiteName}" does not exist, so it cannot be a prerequisite`);
             return interaction.reply({content: `There is no quest called "${prerequisiteName}", so it cannot be a prerequisite!`, ephemeral: true});
         }
-    }
-    
-    let prerequisite = prerequisiteName;
-    if(prerequisiteName) {
+
         prerequisite = prerequisiteName;
     }
     
@@ -27,7 +26,7 @@ function createQuest(logger, interaction, quests) {
         return interaction.reply({content: `That quest already exists!`, ephemeral: true});
     }
 
-    quests[name] = new Quest(description, reward, prerequisite);
+    quests[name] = new Quest(description, reward, recurring ? recurring : false, prerequisite);
     logger.log(`Added new quest "${name}": ${JSON.stringify(quests[name])}`);
 
     saveQuests(interaction.guildId, quests, logger);
@@ -56,6 +55,7 @@ function editQuest(logger, interaction, quests) {
     const newName = interaction.options.getString(`new-name`);
     const description = interaction.options.getString(`description`);
     const reward = interaction.options.getNumber(`reward`);
+    const recurring = interaction.options.getBoolean(`recurring`);
     const prerequisiteName = interaction.options.getString(`prerequisite`);
 
     if(!quests[name]) {
@@ -73,6 +73,11 @@ function editQuest(logger, interaction, quests) {
         newReward = reward;
     }
 
+    let newRecurring = quests[name].recurring;
+    if(recurring) {
+        newRecurring = recurring;
+    }
+
     let newPrerequisite = quests[name].prerequisite;
     if(prerequisiteName) {
         if(!quests[prerequisiteName]) {
@@ -86,7 +91,7 @@ function editQuest(logger, interaction, quests) {
     const newCompletedBy = quests[name].completedBy;
 
     if(newName) {
-        quests[newName] = new Quest(newDescription, newReward, newPrerequisite);
+        quests[newName] = new Quest(newDescription, newReward, newRecurring, newPrerequisite);
         quests[newName].completedBy = newCompletedBy;
         delete quests[name];
         
@@ -108,7 +113,10 @@ function listQuests(interaction, quests) {
         let valueOutput = ``;
         for(const name in quests) {
             valueOutput += `\n${name}`;
-            if(quests[name].completedBy.includes(interaction.user.id)) {
+
+            if(quests[name].recurring) {
+                valueOutput += ` 🔁`;
+            } else if(quests[name].completedBy.includes(interaction.user.id)) {
                 valueOutput += ` ✅`;
             }
         }
@@ -144,9 +152,11 @@ function turnInQuest(logger, interaction, quests) {
         return interaction.reply({content: `There's no quest named ${name}!`, ephemeral: true});
     }
 
-    if(quests[name].completedBy.includes(interaction.user.id)) {
-        logger.log(`${interaction.user.tag} has already completed quest "${name}"`);
-        return interaction.reply({content: `You have already completed ${name}!`, ephemeral: true});
+    if(!quests[name].recurring) {
+        if(quests[name].completedBy.includes(interaction.user.id)) {
+            logger.log(`${interaction.user.tag} has already completed quest "${name}"`);
+            return interaction.reply({content: `You have already completed ${name}!`, ephemeral: true});
+        }
     }
 
     if(quests[quests[name].prerequisite]) {
@@ -196,8 +206,10 @@ function viewQuest(logger, interaction, quests) {
 
     logger.log(`Viewing quest "${name}"`);
 
+    const embedTitle = `${name} ${quests[name].recurring ? `🔁` : (quests[name].completedBy.includes(interaction.user.id) ? `✅` : ``)}`;
+
     const output = new EmbedBuilder()
-        .setTitle(quests[name].completedBy.includes(interaction.user.id) ? `${name} ✅` : name)
+        .setTitle(embedTitle)
         .setColor(0xbe2ed6)
         .setDescription(quests[name].description)
         .addFields(
@@ -227,6 +239,9 @@ module.exports = {
                 .setName(`reward`)
                 .setDescription(`How much experience a member recieves upon completing the quest`)
                 .setRequired(true))
+            .addBooleanOption(option => option
+                .setName(`recurring`)
+                .setDescription(`Whether or not the quest is recurring.  Recurring quests can be completed any number of times.`))
             .addStringOption(option => option
                 .setName(`prerequisite`)
                 .setDescription(`The quest to be completed before accepting this quest`)))
@@ -256,6 +271,9 @@ module.exports = {
             .addNumberOption(option => option
                 .setName(`reward`)
                 .setDescription(`How much experience a member recieves upon completing the quest`))
+            .addBooleanOption(option => option
+                .setName(`recurring`)
+                .setDescription(`Whether or not the quest is recurring.  Recurring quests can be completed any number of times.`))
             .addStringOption(option => option
                 .setName(`prerequisite`)
                 .setDescription(`The quest to be completed before accepting this quest`)))
