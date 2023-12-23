@@ -11,17 +11,12 @@ module.exports = {
         logger.log(`${interaction.user.tag} pressed an "approve" button on message ${interaction.message.id}`);
 
         permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => {
-            if(!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
-                logger.log(`${interaction.user.tag} had insufficient permissions`);
-                return interaction.reply({content: `You do not have permission to do this!`, ephemeral: true});
-            }
-            
             const config = loadConfig(interaction.guildId, logger);
             const turnInMessage = config.turnInMessages[interaction.message.id];
     
             if(!turnInMessage) {
                 logger.log(`There was no turn in message data associated with this message`);
-                return interaction.update({content: `This message did not have any associated turn-in request data!  How strange...`, components: []});
+                return interaction.update({content: `This message did not have any associated turn-in request data!  How strange...`, embeds: [], components: []});
             }
     
             const players = loadPlayers(interaction.guildId, logger);
@@ -30,7 +25,7 @@ module.exports = {
                 logger.newline;
                 
                 delete config.turnInMessages[interaction.message.id];
-                return interaction.update({content: `The player with that ID does not have a Totally Epic Quests profile!`, components: []});
+                return interaction.update({content: `That user does not have a Totally Epic Quests profile!`, embeds: [], components: []});
             }
     
             const quests = loadQuests(interaction.guildId, logger);
@@ -38,7 +33,7 @@ module.exports = {
                 logger.log(`There is no quest named ${turnInMessage.questName}`);
     
                 delete config.turnInMessages[interaction.message.id];
-                return interaction.update({content: `There is no quest named ${turnInMessage.questName}!`, components: []});
+                return interaction.update({content: `There is no quest named ${turnInMessage.questName}!`, embeds: [], components: []});
             }
     
             let leveledUp = false;
@@ -62,13 +57,19 @@ module.exports = {
             savePlayers(interaction.guildId, players, logger);
             saveQuests(interaction.guildId, quests, logger);
             saveConfig(interaction.guildId, config, logger);
+
+            const embed = interaction.message.embeds[0]; // since there is only one embed on the message
+            const actionTakenField = embed.fields.find(field => field.name === `Action taken`);
+
+            if(actionTakenField) {
+                actionTakenField.value = `Approved by ${interaction.user}`;
+            }
+            
+            interaction.update({embeds: [embed], components: []});
     
             interaction.guild.channels.fetch(config.messageChannel)
                 .then(channel => interaction.client.users.fetch(turnInMessage.playerId)
                     .then(user => {
-                        interaction.guild.members.fetch(user)
-                            .then(member => interaction.update({content: `${member.displayName}'s ${turnInMessage.questName} turn-in request was approved by ${interaction.member.displayName}!`, components: []}));
-    
                         channel.send(`Congratulations ${user}, you have completed the ${turnInMessage.questName} quest and recieved your rewards!`);
                         if(leveledUp) {
                             channel.send(`You've also leveled up to level ${players[turnInMessage.playerId].level}!`);

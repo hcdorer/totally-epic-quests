@@ -176,7 +176,7 @@ function turnInQuest(logger, interaction, quests) {
             const embed = new EmbedBuilder()
                 .setColor(0xbe2ed6)
                 .setTitle(`Turn-In Request`)
-                .setDescription(`${interaction.member.displayName} wants to turn in the ${name} quest`)
+                .setDescription(`${interaction.user} wants to turn in the ${name} quest`)
                 .addFields(
                     { name: `${name} quest description`, value: `${quests[name].description}` },
                     { name: `Action taken`, value: `None yet`}
