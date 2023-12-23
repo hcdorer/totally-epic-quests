@@ -9,7 +9,7 @@ module.exports = {
         logger.log(`${interaction.user.tag} pressed a "deny" button on message ${interaction.message.id}`);
 
         permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => {
-            const config = loadConfig(logger, interaction.guildId);
+            const config = loadConfig(interaction.guildId, logger);
             const turnInMessage = config.turnInMessages[interaction.message.id];
 
             if(!turnInMessage) {
@@ -21,7 +21,7 @@ module.exports = {
 
             logger.log(`Successfully denied the turn-in request`);
 
-            saveConfig(logger, interaction.guildId, config);
+            saveConfig(interaction.guildId, config, logger);
 
             interaction.guild.channels.fetch(config.messageChannel)
                 .then(channel => interaction.client.users.fetch(turnInMessage.playerId)

@@ -173,6 +173,15 @@ function turnInQuest(logger, interaction, quests) {
         .then(channel => {
             logger.log(`Sending approval request to the server's mod channel`);
 
+            const embed = new EmbedBuilder()
+                .setColor(0xbe2ed6)
+                .setTitle(`Turn-In Request`)
+                .setDescription(`${interaction.member.displayName} wants to turn in the ${name} quest`)
+                .addFields(
+                    { name: `${name} quest description`, value: `${quests[name].description}` },
+                    { name: `Action taken`, value: `None yet`}
+                );
+            
             const buttons = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder()
@@ -185,7 +194,7 @@ function turnInQuest(logger, interaction, quests) {
                         .setStyle(ButtonStyle.Danger)
                 );
             
-            channel.send({content: `${interaction.member.displayName} wants to turn in the ${name} quest!`, components: [buttons]})
+            channel.send({embeds: [embed], components: [buttons]})
                 .then(message => {
                     logger.log(`Registering the approval request message in the config file`);
 
