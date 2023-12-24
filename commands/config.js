@@ -99,28 +99,28 @@ module.exports = {
                 if(config.rankRoles.length <= 0) {
                     return interaction.reply({content: `You have not set up any rank roles for this server!`, ephemeral: true});
                 }
+
+                const embed = new EmbedBuilder()
+                    .setTitle(`${interaction.guild.name} Rank Roles`)
+                    .setColor(0x39e75f);
                 
-                let buildOutput = () => {
+                let buildEmbed = () => {                   
                     // eslint-disable-next-line no-unused-vars
                     return new Promise((resolve, reject) => {
-                        let output = `The rank roles for this server are:\n`;
+                        logger.log(`Building embed`);
 
-                        let rolesProcessed = 0;
                         config.rankRoles.forEach(rankRole => {
                             interaction.guild.roles.fetch(rankRole.id)
                                 .then(role => {
-                                    output += `\n${role.name}, attained at level ${rankRole.attainedAtLevel}`;
-                                    rolesProcessed++
-
-                                    if(rolesProcessed === config.rankRoles.length) {
-                                        resolve(output);
-                                    }
+                                    embed.addFields({name: `${role.name}`, value: `Attained at level ${rankRole.attainedAtLevel}`});
                                 });
                         });
-                    });
+
+                        resolve();
+                    })
                 }
 
-                buildOutput().then(output => interaction.reply({content: output, ephemeral: true}));
+                buildEmbed().then(() => interaction.reply({embeds: [embed], ephemeral: true}));
 
                 return;
             }
