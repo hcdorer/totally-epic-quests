@@ -1,5 +1,6 @@
 const fs = require(`fs`);
 const path = require(`path`);
+const { GuildConfig } = require(`./guildConfig.js`);
 
 function saveData(data, filename) {
     fs.writeFile(path.join(__dirname, `..`, `saves`, filename), JSON.stringify(data), (err) => {
@@ -93,7 +94,7 @@ function loadPlayers(guildId, logger = null) {
         if(logger) {
             logger.log(`Error loading ${filename}`);
         }
-        return;
+        return null;
     }
     
     if(logger) {
@@ -119,7 +120,7 @@ function loadQuests(guildId, logger = null) {
             logger.log(`Error loading ${filename}`);
         }
 
-        return;
+        return null;
     }
     
     if(logger) {
@@ -145,7 +146,7 @@ function loadConfig(guildId, logger = null) {
             logger.log(`Error loading ${filename}`);
         }
 
-        return;
+        return null;
     }
 
     if(logger) {
@@ -155,11 +156,26 @@ function loadConfig(guildId, logger = null) {
     return config;
 }
 
+/**
+ * 
+ * @param {Logger} logger 
+ * @param {any} interaction 
+ * @returns 
+ */
+function createNewSave(logger, interaction) {
+    logger.log(`Attempting to create a new save in the server ${interaction.guild.name} (id ${interaction.guildId})`)
+    
+    savePlayers(interaction.guildId, {}, logger);
+    saveQuests(interaction.guildId, {}, logger);
+    saveConfig(interaction.guildId, new GuildConfig(), logger);
+}
+
 module.exports = {
     savePlayers,
     saveQuests,
     saveConfig,
     loadPlayers,
     loadQuests,
-    loadConfig
+    loadConfig,
+    createNewSave
 }
