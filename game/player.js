@@ -17,7 +17,7 @@ class Player {
     let newPlayers = {};
     for(const id in players) {
         newPlayers[id] = new Player();
-        convertObject(players, newPlayers);
+        newPlayers[id] = convertObject(players[id], newPlayers[id]);
     }
 
     return newPlayers;

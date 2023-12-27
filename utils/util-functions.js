@@ -6,11 +6,12 @@ const path = require(`path`);
  * @param {Object} target 
  */
 function convertObject(source, target) {
-    for(const key in Object.keys(source)) {
+    for(let key in source) {
         if(key in target) {
             target[key] = source[key];
         }
     }
+    return target;
 }
 
 function permissionCheck(logger, interaction, permission, onPass, onFail = null) {

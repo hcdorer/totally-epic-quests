@@ -17,9 +17,7 @@ class GuildConfig {
  */
 function convertConfig(config) {
     let newConfig = new GuildConfig();
-    convertObject(config, newConfig);
-
-    return newConfig;
+    return convertObject(config, newConfig);
 }
 
 module.exports = { GuildConfig, convertConfig }

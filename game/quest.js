@@ -18,7 +18,7 @@ class Quest {
      * @param {boolean} recurring
      * @param {string} prerequisite
      */
-    constructor(description, reward, recurring, prerequisite) {
+    constructor(description = ``, reward = 0, recurring = false, prerequisite = ``) {
         this.description = description;
         this.reward = reward;
         this.recurring = recurring;
@@ -33,10 +33,10 @@ class Quest {
 function convertQuests(quests) {
     let newQuests = {};
     for(const name in quests) {
-        newQuests[name] = new Quest(quests[name].description, quests[name].reward, quests[name].recurring, quests[name].prerequisite);
-        convertObject(quests, newQuests);
+        newQuests[name] = new Quest();
+        newQuests[name] = convertObject(quests[name], newQuests[name]);
     }
-
+    
     return newQuests;
 }
 
