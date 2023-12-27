@@ -361,6 +361,8 @@ module.exports = {
         }
 
         const filteredChoices = choices.filter(choice => choice.startsWith(focusedOption.value));
-        await interaction.respond(filteredChoices.map(choice => ({name: choice, value: choice})));
+        if(filteredChoices.length <= 25) {
+            await interaction.respond(filteredChoices.map(choice => ({name: choice, value: choice})));
+        }
     }
 }
