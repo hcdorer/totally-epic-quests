@@ -1,16 +1,16 @@
 class TurnInMessage {
     /** @type {string} */
-    playerId
+    playerId;
     /** @type {string} */
-    questName
+    questName;
 
     /**
      * @param {string} playerId 
      * @param {string} questName 
      */
     constructor(playerId, questName) {
-        this.playerId = playerId
-        this.questName = questName
+        this.playerId = playerId;
+        this.questName = questName;
     }
 }
 

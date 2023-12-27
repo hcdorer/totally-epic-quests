@@ -2,13 +2,13 @@ const { convertObject } = require("../utils/util-functions")
 
 class GuildConfig {
     /** @type {RankRole[]} */
-    rankRoles = []
+    rankRoles = [];
     /** @type {string} */
-    modChannel = ""
+    modChannel = "";
     /** @type {string} */
-    messageChannel = ""
+    messageChannel = "";
     /** @type {Object} */
-    turnInMessages = {}
+    turnInMessages = {};
 }
 
 /**
@@ -16,10 +16,10 @@ class GuildConfig {
  * @returns {GuildConfig}
  */
 function convertConfig(config) {
-    let newConfig = new GuildConfig()
-    convertObject(config, newConfig)
+    let newConfig = new GuildConfig();
+    convertObject(config, newConfig);
 
-    return newConfig
+    return newConfig;
 }
 
 module.exports = { GuildConfig, convertConfig }

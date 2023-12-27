@@ -2,13 +2,11 @@ const { convertObject } = require("../utils/util-functions")
 
 class Player {
     /** @type {number} */
-    level = 1
+    level = 1;
     /** @type {number} */
-    experience = 0
+    experience = 0;
     /** @type {number} */
-    expToNextLevel = 100
-    /** @type {string} */
-    currentQuest = ""
+    expToNextLevel = 100;
 }
 
 /**
@@ -16,13 +14,13 @@ class Player {
  * @returns {Object}
  */
  function convertPlayers(players) {
-    let newPlayers = {}
+    let newPlayers = {};
     for(const id in players) {
-        newPlayers[id] = new Player()
-        convertObject(players, newPlayers)
+        newPlayers[id] = new Player();
+        convertObject(players, newPlayers);
     }
 
-    return newPlayers
+    return newPlayers;
 }
 
 /**
