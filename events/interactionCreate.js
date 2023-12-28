@@ -10,7 +10,7 @@ module.exports = {
         
             await command.execute(logger, interaction)
                 .catch(error => {
-                    console.error(error);
+                    logger.error(error);
                     interaction.reply({content: `There was an error executing this command!`, ephemeral: true});
                 })
         } else if(interaction.isAutocomplete()) {
@@ -22,7 +22,7 @@ module.exports = {
 
             await command.autocomplete(logger, interaction)
                 .catch(error => {
-                    console.error(error);
+                    logger.error(error);
                 })
         } else if(interaction.isButton()) {
             const button = interaction.client.buttons.get(interaction.customId);
@@ -34,7 +34,7 @@ module.exports = {
             try {
                 await button.execute(logger, interaction);
             } catch(error) {
-                console.error(error);
+                logger.error(error);
                 await interaction.reply({content: `There was an error performing this action!`, ephemeral: true});
             }
         }

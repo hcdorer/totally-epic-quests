@@ -32,6 +32,13 @@ class Logger {
         fs.appendFileSync(this.filePath, `${output}\n`);
     }
 
+    error(error) {
+        this.log(`Error caught, details below:`);
+
+        console.error(error);
+        fs.appendFileSync(this.filePath, `${error.stack}`);
+    }
+
     newline() {
         const output = ``;
         

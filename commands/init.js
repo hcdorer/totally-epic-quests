@@ -45,7 +45,7 @@ module.exports = {
                 logger.log(`Initialized Totally Epic Quests in ${interaction.guild.name} (id: ${interaction.guildId})`);
                 interaction.reply(`Totally Epic Quests has been initialized in ${interaction.guild.name}!`);
             } catch(error) {
-                console.error(error);
+                logger.error(error);
                 return interaction.reply(`Failed to initialize Totally Epic Quests!`);
             }
         }

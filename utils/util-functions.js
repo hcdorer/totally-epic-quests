@@ -45,7 +45,6 @@ function loadPatchNotes(logger, patchNoteFile) {
             }
             
             patchNotesText = data;
-            console.log(patchNotesText);
 
             resolve(patchNotesText);
         });
