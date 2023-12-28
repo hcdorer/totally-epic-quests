@@ -351,6 +351,7 @@ module.exports = {
     },
     async autocomplete(logger, interaction) {
         const focusedOption = interaction.options.getFocused(true);
+        logger.newline();
         logger.log(`Autocompleting the /quest ${interaction.options.getSubcommand()} ${focusedOption.name} option`);
 
         const quests = loadQuests(interaction.guildId, logger);

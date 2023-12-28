@@ -17,7 +17,16 @@ for(const file of eventFiles) {
     const event = require(filePath);
 
     if(event.once) {
-        client.once(event.name, (...args) => event.execute(logger, ...args));
+        client.once(event.name, (...args) => {
+            if(event.name === `ready`) {
+                event.execute(logger, client => {
+                    console.log(`ready event onStartup() callback`);
+                    console.log(`${client.user.tag}`);
+                }, ...args);
+            } else {
+                event.execute(logger, ...args);
+            }
+        });
     } else {
         client.on(event.name, (...args) => event.execute(logger, ...args));
     }

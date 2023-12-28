@@ -5,8 +5,10 @@ const { patchNotesFile } = require(`../config.json`);
 module.exports = {
     name: "ready",
     once: true,
-    async execute(logger, client) {
+    async execute(logger, onStartup, client) {
         logger.log(`Logged in as ${client.user.tag}`);
+
+        onStartup(client);
 
         if(!patchNotesFile) {
             return;
