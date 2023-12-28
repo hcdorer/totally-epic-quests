@@ -3,6 +3,29 @@ const { token } = require(`./config.json`);
 const fs = require(`fs`);
 const path = require(`path`);
 const Logger = require(`./utils/logger.js`);
+const { loadPatchNotes } = require(`./utils/util-functions.js`);
+const { loadConfig } = require(`./game/gameData.js`);
+
+/**
+ * Parse the arguments passed into the terminal
+ * @param {string[]} args should be process.argv.slice(2)
+ * @returns Object
+ */
+// eslint-disable-next-line no-unused-vars
+function parseTerminalArgs(args) {
+    let result = {};
+    
+    for(let i = 0; i < args.length; i++) {
+        if(args[i] === `.p` || args[i] === `.patch-notes`) {
+            i++; // look at the next argument
+            result.patchNoteFile = args[i];
+        }
+    }
+    
+    return result;
+}
+
+const terminalArgs = parseTerminalArgs(process.argv.slice(2));
 
 const client = new Client({intents: [GatewayIntentBits.Guilds]});
 
@@ -20,8 +43,37 @@ for(const file of eventFiles) {
         client.once(event.name, (...args) => {
             if(event.name === `ready`) {
                 event.execute(logger, client => {
-                    console.log(`ready event onStartup() callback`);
-                    console.log(`${client.user.tag}`);
+                    if(terminalArgs.patchNoteFile) {
+                        loadPatchNotes(logger, terminalArgs.patchNoteFile)
+                            .then(patchNotesText => {
+                                logger.log(`Attempting to send patch note file to each guild that the bot is in`);
+                        
+                                client.guilds.fetch();
+                                client.guilds.cache.forEach(guild => {
+                                    const config = loadConfig(guild.id, logger);
+                                    if(!config) {
+                                        logger.log(`Could not find config for guild ${guild.name} (id ${guild.id})`);
+                                        return;
+                                    }
+
+                                    if(!config.messageChannel) {
+                                        logger.log(`Guild ${guild.name} (id ${guild.id}) does not have a message channel set`);
+                                        return;
+                                    }
+
+                                    if(!patchNotesText) {
+                                        logger.log(`Patch notes file was empty`);
+                                        return;
+                                    }
+
+                                    guild.channels.fetch(config.messageChannel)
+                                        .then(channel => {
+                                            logger.log(`Sending patch notes to ${guild.name} (id ${guild.id}) message channel #${channel.name} (id ${channel.id})`);
+                                            channel.send(patchNotesText);
+                                        });
+                                });
+                            });
+                    }
                 }, ...args);
             } else {
                 event.execute(logger, ...args);
