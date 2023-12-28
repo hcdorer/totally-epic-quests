@@ -42,7 +42,7 @@ function addRankRole(logger, player, playerId, config, guild) {
                                                 return;
                                             });
                                     } else {
-                                        console.error(error);
+                                        logger.error(error);
                                     }
                                 });
 
