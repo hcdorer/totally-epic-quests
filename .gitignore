@@ -2,6 +2,7 @@
 node_modules/
 logs/
 saves/
+patch_notes/
 .vscode/
 .vs/
 

@@ -11,8 +11,8 @@ const { loadConfig } = require(`./game/gameData.js`);
  * @param {string[]} args should be process.argv.slice(2)
  * @returns Object
  */
-// eslint-disable-next-line no-unused-vars
-function parseTerminalArgs(args) {
+function parseTerminalArgs() {
+    const args = process.argv.slice(2);
     let result = {};
     
     for(let i = 0; i < args.length; i++) {
@@ -25,7 +25,7 @@ function parseTerminalArgs(args) {
     return result;
 }
 
-const terminalArgs = parseTerminalArgs(process.argv.slice(2));
+const terminalArgs = parseTerminalArgs();
 
 const client = new Client({intents: [GatewayIntentBits.Guilds]});
 
