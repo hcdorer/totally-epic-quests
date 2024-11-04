@@ -17,6 +17,12 @@ module.exports = {
                 return interaction.update({content: `This message did not have any associated turn-in request data!  How strange...`, embeds: [], components: []});
             }
 
+            if(interaction.member.id === turnInMessage.playerId && !config.allowSelfApprovals) {
+                logger.log(`${interaction.user.tag} attempted to approve their own turn-in request, but this is not allowed`);
+
+                return interaction.reply({ content: "Nice try, but you aren't allowed to deny your own turn-in requests!", ephemeral: true });
+            }
+
             delete config.turnInMessages[interaction.message.id];
 
             logger.log(`Successfully denied the turn-in request`);
@@ -38,7 +44,5 @@ module.exports = {
                         channel.send(`${user}, it seems that you haven't completed ${turnInMessage.questName} yet.  Keep trying!`);
                     }));
         })
-
-        
     }
 }

@@ -97,7 +97,7 @@ function editQuest(logger, interaction, quests) {
         
         logger.log(`The ${name} quest is now ${newName}: ${JSON.stringify(quests[newName])}`);
     } else {
-        quests[name] = new Quest(newDescription, newReward, newPrerequisite);
+        quests[name] = new Quest(newDescription, newReward, newRecurring, newPrerequisite);
         quests[name].completedBy = newCompletedBy;
         
         logger.log(`The "${name}" quest is now: ${JSON.stringify(quests[name])}`);

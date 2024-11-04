@@ -35,6 +35,12 @@ module.exports = {
                 delete config.turnInMessages[interaction.message.id];
                 return interaction.update({content: `There is no quest named ${turnInMessage.questName}!`, embeds: [], components: []});
             }
+
+            if(interaction.member.id === turnInMessage.playerId && !config.allowSelfApprovals) {
+                logger.log(`${interaction.user.tag} attempted to approve their own turn-in request, but this is not allowed`);
+
+                return interaction.reply({ content: "Nice try, but you aren't allowed to approve your own turn-in requests!", ephemeral: true });
+            }
     
             let leveledUp = false;
             players[turnInMessage.playerId].experience += quests[turnInMessage.questName].reward;

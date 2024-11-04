@@ -9,6 +9,8 @@ class GuildConfig {
     messageChannel = "";
     /** @type {Object} */
     turnInMessages = {};
+    /** @type {boolean} */
+    allowSelfApprovals = true;
     /** @type {object} */
     resetConfig = null;
 

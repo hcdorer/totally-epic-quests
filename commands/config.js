@@ -46,6 +46,13 @@ module.exports = {
                 .setDescription(`The channel the bot will send moderator-specific messages to.`)
                 .setRequired(true)))
         .addSubcommand(subcommand => subcommand
+            .setName('allow-self-approvals')
+            .setDescription('Set whether or not moderators are allowed to approve their own quest turn-in requests.')
+            .addBooleanOption(option => option
+                .setName('value')
+                .setDescription('True to allow this, false to disallow.')
+                .setRequired(true)))
+        .addSubcommand(subcommand => subcommand
             .setName(`view`)
             .setDescription(`Show the config settings for this server.`)),
     async execute(logger, interaction) {
@@ -100,14 +107,14 @@ module.exports = {
                     return interaction.reply({content: `You have not set up any rank roles for this server!`, ephemeral: true});
                 }
 
-                const embed = new EmbedBuilder()
-                    .setTitle(`${interaction.guild.name} Rank Roles`)
-                    .setColor(0x39e75f);
-                
                 let buildEmbed = () => {                   
                     // eslint-disable-next-line no-unused-vars
                     return new Promise((resolve, reject) => {
                         logger.log(`Building embed`);
+
+                        const embed = new EmbedBuilder()
+                            .setTitle(`${interaction.guild.name} Rank Roles`)
+                            .setColor(0x39e75f);
 
                         config.rankRoles.forEach(rankRole => {
                             interaction.guild.roles.fetch(rankRole.id)
@@ -116,11 +123,11 @@ module.exports = {
                                 });
                         });
 
-                        resolve();
+                        resolve(embed);
                     })
                 }
 
-                buildEmbed().then(() => interaction.reply({embeds: [embed], ephemeral: true}));
+                buildEmbed().then(embed => interaction.reply({embeds: [embed], ephemeral: true}));
 
                 return;
             }
@@ -151,6 +158,17 @@ module.exports = {
 
             return;
         }
+        if(interaction.options.getSubcommand() === 'allow-self-approvals') {
+            logger.log('Subcommand: allow-self-approvals');
+
+            let value = interaction.options.getBoolean('value');
+
+            config.allowSelfApprovals = value;
+            saveConfig(interaction.guildId, config, logger);
+
+            logger.log(`allowSelfApprovals set to ${value}`);
+            interaction.reply({ content: `${config.allowSelfApprovals ? 'Server mods are now allowed to approve their own turn-in requests.' : 'Server mods are no longer allowed to approve their own turn-in requests.'}`, ephemeral: true });
+        }
         if(interaction.options.getSubcommand() === `view`) {
             if(interaction.options.getSubcommandGroup() === `rank-role`) {
                 return;
@@ -163,7 +181,8 @@ module.exports = {
                 .setColor(0x39e75f)
                 .addFields(
                     {name: `Message Channel`, value: config.messageChannel ? `<#${config.messageChannel}>` : `None`},
-                    {name: `Mod Channel`, value: config.modChannel ? `<#${config.modChannel}>` : `None`}
+                    {name: `Mod Channel`, value: config.modChannel ? `<#${config.modChannel}>` : `None`},
+                    {name: 'Allow Self Approvals', value: `${config.allowSelfApprovals}`}
                 );
             
             logger.log(`Displaying this server's config`);
