@@ -66,6 +66,11 @@ for(const file of eventFiles) {
                                         return;
                                     }
 
+                                    if(!config.showPatchNotes) {
+                                        logger.log(`Patch notes are not shown in ${guild.name}`);
+                                        return;
+                                    }
+
                                     guild.channels.fetch(config.messageChannel)
                                         .then(channel => {
                                             logger.log(`Sending patch notes to ${guild.name} (id ${guild.id}) message channel #${channel.name} (id ${channel.id})`);

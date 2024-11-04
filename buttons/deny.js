@@ -43,6 +43,6 @@ module.exports = {
                     .then(user => {
                         channel.send(`${user}, it seems that you haven't completed ${turnInMessage.questName} yet.  Keep trying!`);
                     }));
-        })
+        });
     }
 }

@@ -53,6 +53,13 @@ module.exports = {
                 .setDescription('True to allow this, false to disallow.')
                 .setRequired(true)))
         .addSubcommand(subcommand => subcommand
+            .setName('show-patch-notes')
+            .setDescription("Set whether or not patch notes are broadcasted in the server's message channel.")
+            .addBooleanOption(option => option
+                .setName('value')
+                .setDescription("True to show patch notes, false to disallow.")
+                .setRequired(true)))
+        .addSubcommand(subcommand => subcommand
             .setName(`view`)
             .setDescription(`Show the config settings for this server.`)),
     async execute(logger, interaction) {
@@ -124,8 +131,8 @@ module.exports = {
                         });
 
                         resolve(embed);
-                    })
-                }
+                    });
+                };
 
                 buildEmbed().then(embed => interaction.reply({embeds: [embed], ephemeral: true}));
 
@@ -168,6 +175,21 @@ module.exports = {
 
             logger.log(`allowSelfApprovals set to ${value}`);
             interaction.reply({ content: `${config.allowSelfApprovals ? 'Server mods are now allowed to approve their own turn-in requests.' : 'Server mods are no longer allowed to approve their own turn-in requests.'}`, ephemeral: true });
+
+            return;
+        }
+        if(interaction.options.getSubcommand() === 'show-patch-notes') {
+            logger.log("Subcommand: show-patch-notes");
+
+            let value = interaction.options.getBoolean('value');
+
+            config.showPatchNotes = value;
+            saveConfig(interaction.guildId, config, logger);
+
+            logger.log(`showPatchNotes set to ${value}`);
+            interaction.reply({ content: `${config.showPatchNotes ? `Totally Epic Quests patch notes will be shown in <#${config.messageChannel}>` : `Totally Epic Quests patch notes will not be shown in <#${config.messageChannel}>`}`, ephemeral: true });
+
+            return;
         }
         if(interaction.options.getSubcommand() === `view`) {
             if(interaction.options.getSubcommandGroup() === `rank-role`) {
@@ -180,9 +202,10 @@ module.exports = {
                 .setTitle(`${interaction.guild.name} Config`)
                 .setColor(0x39e75f)
                 .addFields(
-                    {name: `Message Channel`, value: config.messageChannel ? `<#${config.messageChannel}>` : `None`},
-                    {name: `Mod Channel`, value: config.modChannel ? `<#${config.modChannel}>` : `None`},
-                    {name: 'Allow Self Approvals', value: `${config.allowSelfApprovals}`}
+                    { name: `Message Channel`, value: config.messageChannel ? `<#${config.messageChannel}>` : `None` },
+                    { name: `Mod Channel`, value: config.modChannel ? `<#${config.modChannel}>` : `None` },
+                    { name: 'Allow Self Approvals', value: `${config.allowSelfApprovals}` },
+                    { name: 'Show Patch Notes', value: `${config.showPatchNotes}` }
                 );
             
             logger.log(`Displaying this server's config`);

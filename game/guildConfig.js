@@ -11,6 +11,8 @@ class GuildConfig {
     turnInMessages = {};
     /** @type {boolean} */
     allowSelfApprovals = true;
+    /** @type {boolean} */
+    showPatchNotes = true;
     /** @type {object} */
     resetConfig = null;
 

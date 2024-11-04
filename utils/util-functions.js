@@ -1,5 +1,6 @@
 const fs = require("fs");
 const path = require(`path`);
+const { patchNotesPath } = require('../config.json'); 
 
 /**
  * @param {Object} source 
@@ -35,7 +36,7 @@ function permissionCheck(logger, interaction, permission, onPass, onFail = null)
 function loadPatchNotes(logger, patchNoteFile) {
     // eslint-disable-next-line no-unused-vars
     return new Promise((resolve, reject) => {
-        const patchNotePath = path.join(__dirname, '..', patchNoteFile);
+        const patchNotePath = path.join(__dirname, '..', patchNotesPath, patchNoteFile);
         let patchNotesText = ``;
 
         logger.log(`Reading patch note file located at ${patchNotePath}`);
