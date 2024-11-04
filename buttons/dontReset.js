@@ -1,5 +1,6 @@
 const { PermissionFlagsBits } = require("discord.js");
 const { permissionCheck } = require("../utils/util-functions");
+const { loadConfig, saveConfig } = require("../game/gameData");
 
 module.exports = {
     name: `dontReset`,
@@ -8,6 +9,10 @@ module.exports = {
         logger.log(`${interaction.user.tag} pressed a "dontReset" button on message ${interaction.message.id}`);
 
         permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => {
+            const config = loadConfig(interaction.guildId, logger);
+            config.resetConfig = null;
+            saveConfig(interaction.guildId, config, logger);
+
             interaction.update({content: `The current saves will be preserved.`, embeds: [], components: [], ephemeral: true});
         }, () => {
             let messageText = "You do not have permission to do this!";

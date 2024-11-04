@@ -162,12 +162,18 @@ function loadConfig(guildId, logger = null) {
  * @param {any} interaction 
  * @returns 
  */
-function createNewSave(logger, interaction) {
-    logger.log(`Attempting to create a new save in the server ${interaction.guild.name} (id ${interaction.guildId})`)
+function createNewSave(logger, guildId, messageChannel, modChannel) {
+    logger.log(`Attempting to create a new save in the server with id ${guildId})`);
     
-    savePlayers(interaction.guildId, {}, logger);
-    saveQuests(interaction.guildId, {}, logger);
-    saveConfig(interaction.guildId, new GuildConfig(), logger);
+    savePlayers(guildId, {}, logger);
+    saveQuests(guildId, {}, logger);
+    saveConfig(guildId, new GuildConfig(messageChannel, modChannel), logger);
+}
+
+function saveExists(logger, guildId) {
+    logger.log(`Checking if a save exists for the server with id ${guildId}`);
+
+    return loadPlayers(guildId, logger) && loadQuests(guildId, logger) && loadConfig(guildId, logger); // what happens if one of those files goes missing?
 }
 
 module.exports = {
@@ -177,5 +183,6 @@ module.exports = {
     loadPlayers,
     loadQuests,
     loadConfig,
-    createNewSave
+    createNewSave,
+    saveExists
 }

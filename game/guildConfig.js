@@ -9,6 +9,13 @@ class GuildConfig {
     messageChannel = "";
     /** @type {Object} */
     turnInMessages = {};
+    /** @type {object} */
+    resetConfig = null;
+
+    constructor(messageChannel, modChannel) {
+        this.messageChannel = messageChannel;
+        this.modChannel = modChannel;
+    }
 }
 
 /**

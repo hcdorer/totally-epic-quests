@@ -1,6 +1,6 @@
 const { PermissionFlagsBits } = require("discord.js");
 const { permissionCheck } = require("../utils/util-functions");
-const { createNewSave } = require(`../game/gameData.js`);
+const { createNewSave, loadConfig } = require(`../game/gameData.js`);
 
 module.exports = {
     name: `reset`,
@@ -9,7 +9,8 @@ module.exports = {
         logger.log(`${interaction.user.tag} pressed a "reset" button on message ${interaction.message.id}`);
         
         permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => {
-            createNewSave(logger, interaction);
+            const config = loadConfig(interaction.guildId, logger);
+            createNewSave(logger, interaction.guildId, config.resetConfig.messageChannel, config.resetConfig.modChannel);
 
             logger.log(`Reset Totally Epic Quests in ${interaction.guild.name} (id: ${interaction.guildId})`);
             interaction.update({content: `Totally Epic Quests has been reset in ${interaction.guild.name}!`, embeds: [], components: [], ephemeral: true});

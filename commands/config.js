@@ -33,17 +33,17 @@ module.exports = {
                 .setDescription(`View the list of rank roles`)))
         .addSubcommand(subcommand => subcommand
             .setName(`set-message-channel`)
-            .setDescription(`Set the channel the bot will send standalone messages to.`)
+            .setDescription(`Set the channel the bot will send messages to.`)
             .addChannelOption(option => option
                 .setName(`channel`)
-                .setDescription(`The channel to send standalone messages to`)
+                .setDescription(`The channel the bot will send messages to.`)
                 .setRequired(true)))
         .addSubcommand(subcommand => subcommand
             .setName(`set-mod-channel`)
-            .setDescription(`Set the channel the bot will send message meant for moderators to.`)
+            .setDescription(`Set the channel the bot will send moderator-specific messages to.`)
             .addChannelOption(option => option
                 .setName(`channel`)
-                .setDescription(`The channel to send messages for moderators to`)
+                .setDescription(`The channel the bot will send moderator-specific messages to.`)
                 .setRequired(true)))
         .addSubcommand(subcommand => subcommand
             .setName(`view`)
