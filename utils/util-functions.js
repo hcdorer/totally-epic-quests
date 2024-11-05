@@ -15,13 +15,29 @@ function convertObject(source, target) {
     return target;
 }
 
+function defaultOnFail(logger, interaction) {
+    logger.log(`${interaction.user.tag} does not have permission to do this`);
+    interaction.reply({ content: "You do not have permission to do this!", ephemeral: true });
+}
+
 function permissionCheck(logger, interaction, permission, onPass, onFail = null) {
     if(interaction.memberPermissions.has(permission)) {
         onPass();
     } else {
         if(!onFail) {
-            logger.log(`${interaction.user.tag} does not have permission to do this`);
-            interaction.reply("You do not have permission to do this!");
+            defaultOnFail(logger, interaction);
+        } else {
+            onFail();
+        }
+    }
+}
+
+function roleCheck(logger, interaction, roleId, onPass, onFail = null) {
+    if(interaction.member.roles.cache.some(roleOnMember => roleOnMember.id === roleId)) {
+        onPass();
+    } else {
+        if(!onFail) {
+            defaultOnFail(logger, interaction);
         } else {
             onFail();
         }
@@ -52,4 +68,4 @@ function loadPatchNotes(logger, patchNoteFile) {
     });
 }
 
-module.exports = { convertObject, permissionCheck, loadPatchNotes, }
+module.exports = { convertObject, permissionCheck, roleCheck, loadPatchNotes, }

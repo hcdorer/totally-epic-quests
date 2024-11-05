@@ -9,6 +9,8 @@ class GuildConfig {
     messageChannel = "";
     /** @type {Object} */
     turnInMessages = {};
+    /** @type {string} */
+    questAuthorRole = "";
     /** @type {boolean} */
     allowSelfApprovals = true;
     /** @type {boolean} */

@@ -2,7 +2,7 @@ const { SlashCommandBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonBuilde
 const { loadQuests, saveQuests, loadPlayers, loadConfig, saveConfig } = require(`../game/gameData.js`);
 const { Quest } = require(`../game/quest.js`);
 const TurnInMessage = require("../game/turnInMessage.js");
-const { permissionCheck } = require("../utils/util-functions.js");
+const { permissionCheck, roleCheck } = require("../utils/util-functions.js");
 
 function createQuest(logger, interaction, quests) {
     const name = interaction.options.getString(`name`);
@@ -312,17 +312,26 @@ module.exports = {
         logger.log(`${interaction.user.tag} used /quest`);
 
         const quests = loadQuests(interaction.guildId, logger);
+        const config = loadConfig(interaction.guildId, logger);
 
         if(interaction.options.getSubcommand() === `create`) {
             logger.log(`Subcommand: create`);
 
-            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => createQuest(logger, interaction, quests));
+            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => createQuest(logger, interaction, quests), () => {
+                if(config.questAuthorRole) {
+                    roleCheck(logger, interaction, config.questAuthorRole, () => createQuest(logger, interaction, quests));
+                }
+            });
             return;
         }
         if(interaction.options.getSubcommand() === `delete`) {
             logger.log(`Subcommand: delete`);
 
-            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => deleteQuest(logger, interaction, quests));
+            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => deleteQuest(logger, interaction, quests), () => {
+                if(config.questAuthorRole) {
+                    roleCheck(logger, interaction, config.questAuthorRole, () => deleteQuest(logger, interaction, quests));
+                }
+            });
             return;
         }
         if(interaction.options.getSubcommand() === `list`) {
@@ -334,7 +343,11 @@ module.exports = {
         if(interaction.options.getSubcommand() === `edit`) {
             logger.log(`Subcommand: edit`);
 
-            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => editQuest(logger, interaction, quests));
+            permissionCheck(logger, interaction, PermissionFlagsBits.ManageGuild, () => editQuest(logger, interaction, quests), () => {
+                if(config.questAuthorRole) {
+                    roleCheck(logger, interaction, config.questAuthorRole, () => editQuest(logger, interaction, quests));
+                }
+            });
             return;
         }
         if(interaction.options.getSubcommand() === `view`) {

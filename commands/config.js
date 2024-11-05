@@ -46,6 +46,12 @@ module.exports = {
                 .setDescription(`The channel the bot will send moderator-specific messages to.`)
                 .setRequired(true)))
         .addSubcommand(subcommand => subcommand
+            .setName('set-quest-author-role')
+            .setDescription('Allow users with a given role to create and edit quests.')
+            .addRoleOption(option => option
+                .setName('quest-author-role')
+                .setDescription('The quest author role.  If left blank, only server moderators will have this ability.')))
+        .addSubcommand(subcommand => subcommand
             .setName('allow-self-approvals')
             .setDescription('Set whether or not moderators are allowed to approve their own quest turn-in requests.')
             .addBooleanOption(option => option
@@ -165,6 +171,23 @@ module.exports = {
 
             return;
         }
+        if(interaction.options.getSubcommand() === 'set-quest-author-role') {
+            logger.log('Subcommand: set-quest-author-role');
+
+            let role = interaction.options.getRole('quest-author-role');
+
+            if(role) {
+                config.questAuthorRole = role.id;
+            } else {
+                config.questAuthorRole = "";
+            }
+            saveConfig(interaction.guildId, config, logger);
+
+            logger.log(`${config.questAuthorRole ? `Quest author role set to role with ID ${config.questAuthorRole}` : 'Quest author role removed.'}`);
+            interaction.reply({ content: `${config.questAuthorRole ? `Set quest author role to <@&${config.questAuthorRole}>.` : `Quest author role removed.`}`, ephemeral: true });
+
+            return;
+        }
         if(interaction.options.getSubcommand() === 'allow-self-approvals') {
             logger.log('Subcommand: allow-self-approvals');
 
@@ -204,6 +227,7 @@ module.exports = {
                 .addFields(
                     { name: `Message Channel`, value: config.messageChannel ? `<#${config.messageChannel}>` : `None` },
                     { name: `Mod Channel`, value: config.modChannel ? `<#${config.modChannel}>` : `None` },
+                    { name: 'Quest Author Role', value: config.questAuthorRole ? `<@&${config.questAuthorRole}>` : 'None' },
                     { name: 'Allow Self Approvals', value: `${config.allowSelfApprovals}` },
                     { name: 'Show Patch Notes', value: `${config.showPatchNotes}` }
                 );
