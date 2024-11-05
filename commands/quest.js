@@ -351,8 +351,6 @@ module.exports = {
     },
     async autocomplete(logger, interaction) {
         const focusedOption = interaction.options.getFocused(true);
-        logger.newline();
-        logger.log(`Autocompleting the /quest ${interaction.options.getSubcommand()} ${focusedOption.name} option`);
 
         const quests = loadQuests(interaction.guildId, logger);
         let choices = [];
@@ -361,9 +359,7 @@ module.exports = {
             choices = Object.keys(quests);
         }
 
-        const filteredChoices = choices.filter(choice => choice.startsWith(focusedOption.value));
-        // if(filteredChoices.length <= 25) {
-            await interaction.respond(filteredChoices.map(choice => ({name: choice, value: choice})));
-        // }
+        const filteredChoices = choices.filter(choice => choice.toLowerCase().startsWith(focusedOption.value.toLowerCase())).slice(0, 25);
+        await interaction.respond(filteredChoices.map(choice => ({name: choice, value: choice})));
     }
 }
