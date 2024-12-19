@@ -109,9 +109,12 @@ function editQuest(logger, interaction, quests) {
 }
 
 function listQuests(interaction, quests) {
+    const sortedQuestNames = Object.keys(quests).sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+    console.log(sortedQuestNames); 
+
     let buildQuestList = () => {
         let valueOutput = ``;
-        for(const name in quests) {
+        for(const name of sortedQuestNames) {
             valueOutput += `\n${name}`;
 
             if(quests[name].recurring) {
